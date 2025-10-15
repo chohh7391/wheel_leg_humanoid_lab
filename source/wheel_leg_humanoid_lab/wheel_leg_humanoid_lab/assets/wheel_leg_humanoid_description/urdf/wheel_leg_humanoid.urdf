@@ -93,7 +93,7 @@
   <link name="right_thigh">
     <inertial>
       <origin rpy="0 0 0" xyz="-0.00045586825902857133 -0.01414641938290856 -0.1563447665998967"/>
-      <mass value="11.981536969926172"/>
+      <mass value="5.25364"/>
       <inertia ixx="0.081591" ixy="-5.5e-05" ixz="2.2e-05" iyy="0.073239" iyz="-0.003139" izz="0.021138"/>
     </inertial>
     <visual>
@@ -115,7 +115,7 @@
   <link name="right_wheel">
     <inertial>
       <origin rpy="0 0 0" xyz="4.7966024178600075e-08 -0.04751998475944105 3.2792151178906437e-06"/>
-      <mass value="6.388989701638672"/>
+      <mass value="1.0"/>
       <inertia ixx="0.028695" ixy="-0.0" ixz="0.0" iyy="0.054854" iyz="-1e-06" izz="0.028695"/>
     </inertial>
     <visual>
@@ -185,7 +185,7 @@
   <link name="right_ankle_2">
     <inertial>
       <origin rpy="0 0 0" xyz="0.008905018781294245 0.00014833887182574834 -0.024820135987042802"/>
-      <mass value="4.7664343049317335"/>
+      <mass value="1.55786"/>
       <inertia ixx="0.004308" ixy="5e-06" ixz="-0.000997" iyy="0.030695" iyz="1.6e-05" izz="0.032"/>
     </inertial>
     <visual>
@@ -229,7 +229,7 @@
   <link name="right_foot_wheel_L">
     <inertial>
       <origin rpy="0 0 0" xyz="-0.00044999999696523907 0.0019027760279444195 7.126440070526208e-05"/>
-      <mass value="0.23598528385264425"/>
+      <mass value="0.235985283852645"/>
       <inertia ixx="4.1e-05" ixy="0.0" ixz="-0.0" iyy="7.2e-05" iyz="-0.0" izz="4.1e-05"/>
     </inertial>
     <visual>
@@ -299,7 +299,7 @@
   <link name="left_thigh">
     <inertial>
       <origin rpy="0 0 0" xyz="5.5869728958680565e-05 0.014154850395600549 -0.1563301380696539"/>
-      <mass value="11.979286445373326"/>
+      <mass value="5.25364"/>
       <inertia ixx="0.081573" ixy="-5.5e-05" ixz="-2.2e-05" iyy="0.073225" iyz="0.003147" izz="0.021133"/>
     </inertial>
     <visual>
@@ -321,7 +321,7 @@
   <link name="left_wheel">
     <inertial>
       <origin rpy="0 0 0" xyz="-5.18166456317572e-08 0.04751998042731451 3.3232989318232597e-06"/>
-      <mass value="6.388973210532128"/>
+      <mass value="1.0"/>
       <inertia ixx="0.028695" ixy="-0.0" ixz="-0.0" iyy="0.054854" iyz="1e-06" izz="0.028695"/>
     </inertial>
     <visual>
@@ -391,7 +391,7 @@
   <link name="left_ankle_2">
     <inertial>
       <origin rpy="0 0 0" xyz="0.013515322751595595 0.00019384239713590712 -0.026186141188644596"/>
-      <mass value="4.561092579439662"/>
+      <mass value="1.55786"/>
       <inertia ixx="0.003997" ixy="1.1e-05" ixz="-0.001664" iyy="0.028145" iyz="1.3e-05" izz="0.02973"/>
     </inertial>
     <visual>
@@ -469,21 +469,21 @@
     <parent link="waist"/>
     <child link="right_pelvis_1"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit effort="120" lower="-2.094395" upper="2.094395" velocity="5.02"/>
+    <limit effort="120" lower="-1.57" upper="1.57" velocity="5.02"/>
   </joint>
   <joint name="right_pelvis_2" type="revolute">
     <origin rpy="0 0 0" xyz="0.03875 -0.07915 0.0"/>
     <parent link="right_pelvis_1"/>
     <child link="right_pelvis_2"/>
     <axis xyz="1.0 -0.0 0.0"/>
-    <limit effort="120" lower="-0.43" upper="0.174533" velocity="5.02"/>
+    <limit effort="120" lower="-1.57" upper="0.261799" velocity="5.02"/>
   </joint>
   <joint name="right_thigh" type="revolute">
     <origin rpy="0 0 0" xyz="-0.03785 0.0 -0.11575"/>
     <parent link="right_pelvis_2"/>
     <child link="right_thigh"/>
     <axis xyz="0.0 0.0 1.0"/>
-    <limit effort="120" lower="-0.43" upper="0.43" velocity="5.02"/>
+    <limit effort="120" lower="-1.57" upper="1.57" velocity="5.02"/>
   </joint>
   <joint name="right_wheel" type="continuous">
     <origin rpy="0 0 0" xyz="-0.00045 -0.07905 -0.2342"/>
@@ -497,21 +497,21 @@
     <parent link="right_thigh"/>
     <child link="right_calf"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit effort="120" lower="-2.05" upper="0.26" velocity="5.02"/>
+    <limit effort="120" lower="-2.094395" upper="0.0" velocity="5.02"/>
   </joint>
   <joint name="right_ankle_1" type="revolute">
     <origin rpy="0 0 0" xyz="-0.00045 0.03575 -0.34005"/>
     <parent link="right_calf"/>
     <child link="right_ankle_1"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit effort="24.8" lower="-0.87" upper="0.52" velocity="10.8"/>
+    <limit effort="24.8" lower="-0.610865" upper="0.610865" velocity="10.8"/>
   </joint>
   <joint name="right_ankle_2" type="revolute">
     <origin rpy="0 0 0" xyz="0.0335 0.0035 -0.042"/>
     <parent link="right_ankle_1"/>
     <child link="right_ankle_2"/>
     <axis xyz="-1.0 0.0 0.0"/>
-    <limit effort="24.8" lower="-0.523599" upper="0.523599" velocity="10.8"/>
+    <limit effort="24.8" lower="-0.209439" upper="0.209439" velocity="10.8"/>
   </joint>
   <joint name="right_foot_wheel_R" type="continuous">
     <origin rpy="0 0 0" xyz="0.121925 -0.054653 -0.000598"/>
@@ -530,21 +530,21 @@
     <parent link="waist"/>
     <child link="left_pelvis_1"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit effort="120" lower="-2.094395" upper="2.094395" velocity="5.02"/>
+    <limit effort="120" lower="-1.57" upper="1.57" velocity="5.02"/>
   </joint>
   <joint name="left_pelvis_2" type="revolute">
     <origin rpy="0 0 0" xyz="0.03625 0.07915 0.0"/>
     <parent link="left_pelvis_1"/>
     <child link="left_pelvis_2"/>
     <axis xyz="1.0 -0.0 0.0"/>
-    <limit effort="120" lower="-0.174533" upper="0.43" velocity="5.02"/>
+    <limit effort="120" lower="-0.261799" upper="1.57" velocity="5.02"/>
   </joint>
   <joint name="left_thigh" type="revolute">
     <origin rpy="0 0 0" xyz="-0.03635 0.0 -0.11575"/>
     <parent link="left_pelvis_2"/>
     <child link="left_thigh"/>
     <axis xyz="0.0 0.0 1.0"/>
-    <limit effort="120" lower="-0.43" upper="0.43" velocity="5.02"/>
+    <limit effort="120" lower="-1.57" upper="1.57" velocity="5.02"/>
   </joint>
   <joint name="left_wheel" type="continuous">
     <origin rpy="0 0 0" xyz="5e-05 0.07905 -0.2342"/>
@@ -558,21 +558,21 @@
     <parent link="left_thigh"/>
     <child link="left_calf"/>
     <axis xyz="0.0 1.0 -0.0"/>
-    <limit effort="120" lower="-0.26" upper="2.05" velocity="5.02"/>
+    <limit effort="120" lower="0.0" upper="2.094395" velocity="5.02"/>
   </joint>
   <joint name="left_ankle_1" type="revolute">
     <origin rpy="0 0 0" xyz="5e-05 -0.03575 -0.34005"/>
     <parent link="left_calf"/>
     <child link="left_ankle_1"/>
     <axis xyz="0.0 1.0 -0.0"/>
-    <limit effort="24.8" lower="-0.52" upper="0.87" velocity="10.8"/>
+    <limit effort="24.8" lower="-0.610865" upper="0.610865" velocity="10.8"/>
   </joint>
   <joint name="left_ankle_2" type="revolute">
     <origin rpy="0 0 0" xyz="0.0335 -0.0035 -0.042"/>
     <parent link="left_ankle_1"/>
     <child link="left_ankle_2"/>
     <axis xyz="-1.0 0.0 0.0"/>
-    <limit effort="24.8" lower="-0.523599" upper="0.523599" velocity="10.8"/>
+    <limit effort="24.8" lower="-0.209439" upper="0.209439" velocity="10.8"/>
   </joint>
   <joint name="left_foot_wheel_R" type="continuous">
     <origin rpy="0 0 0" xyz="0.121425 -0.054851 -0.000762"/>
