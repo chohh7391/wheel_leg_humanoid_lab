@@ -20,9 +20,28 @@ This repository provides an Isaac Lab environment for training a wheel-leg human
 
 - Using a python interpreter that has Isaac Lab installed, install the library in editable mode using:
 
-    ```bash
-    # use 'PATH_TO_isaaclab.sh|bat -p' instead of 'python' if Isaac Lab is not installed in Python venv or conda
+- create conda env
+    ```
+    conda create -n wheel_leg_humanoid_lab python=3.11
+    conda activate wheel_leg_humanoid_lab
+    ```
+
+- install dependencies
+    ```
+    pip install --upgrade pip
+    pip install torch==2.7.0 torchvision==0.22.0 --index-url https://download.pytorch.org/whl/cu128
+    pip install "isaacsim[all,extscache]==5.0.0" --extra-index-url https://pypi.nvidia.com
+    ```
+    ```
+    cd ~/
+    git clone git@github.com:isaac-sim/IsaacLab.git
+    sudo apt install cmake build-essential
+    ./isaaclab.sh --install
+    ```
+    ```
+    cd ~/wheel_leg_humanoid_lab
     python -m pip install -e source/wheel_leg_humanoid_lab
+    ```
 
 - Verify that the extension is correctly installed by:
 
