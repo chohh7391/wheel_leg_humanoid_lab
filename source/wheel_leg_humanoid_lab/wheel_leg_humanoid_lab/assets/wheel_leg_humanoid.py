@@ -129,21 +129,21 @@ WHEEL_LEG_HUMANOID_CFG = ArticulationCfg(
             },
             friction=0.0,
         ),
-        # "wheel": ImplicitActuatorCfg(
-        #     joint_names_expr=[".*_wheel"],
-        #     effort_limit_sim=120.0,
-        #     velocity_limit_sim=5.02,
-        #     stiffness={
-        #         ".*_wheel": 0.0,
-        #     },
-        #     damping={
-        #         ".*_wheel": 0.5,
-        #     },
-        #     armature={
-        #         ".*_wheel": 0.01,
-        #     },
-        #     friction=0.0,
-        # ),
+        "wheel": ImplicitActuatorCfg(
+            joint_names_expr=[".*_wheel"],
+            effort_limit_sim=120.0,
+            velocity_limit_sim=5.02,
+            stiffness={
+                ".*_wheel": 0.0,
+            },
+            damping={
+                ".*_wheel": 0.5,
+            },
+            armature={
+                ".*_wheel": 0.01,
+            },
+            friction=0.0,
+        ),
         # foot wheel -> passive joint
     }
 )

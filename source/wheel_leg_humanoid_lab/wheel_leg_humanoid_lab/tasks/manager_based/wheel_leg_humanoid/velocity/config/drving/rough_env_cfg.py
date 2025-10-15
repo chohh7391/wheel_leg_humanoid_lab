@@ -16,7 +16,9 @@ from wheel_leg_humanoid_lab.tasks.manager_based.wheel_leg_humanoid.velocity.velo
 ##
 # Pre-defined configs
 ##
-from wheel_leg_humanoid_lab.assets import WHEEL_LEG_HUMANOID_DRIVING_MODE_CFG  # isort: skip
+# from wheel_leg_humanoid_lab.assets import WHEEL_LEG_HUMANOID_DRIVING_MODE_CFG  # isort: skip
+from wheel_leg_humanoid_lab.assets import WHEEL_LEG_HUMANOID_CFG
+import numpy as np
 
 # use other terrain
 ROUGH_ROAD_CFG = terrain_gen.TerrainGeneratorCfg(
@@ -107,7 +109,14 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         super().__post_init__()
 
         # ------------------------------Sence------------------------------
-        self.scene.robot = WHEEL_LEG_HUMANOID_DRIVING_MODE_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
+        self.scene.robot = WHEEL_LEG_HUMANOID_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
+        self.scene.robot.init_state.pos = (0.0, 0.0, 0.53)
+        self.scene.robot.init_state.joint_pos.update({
+            "right_pelvis_1": np.deg2rad(-20.0),
+            "left_pelvis_1": np.deg2rad(-20.0),
+            "right_calf": np.deg2rad(-120.0),
+            "left_calf": np.deg2rad(-120.0),
+        })
         self.scene.height_scanner.prim_path = "{ENV_REGEX_NS}/Robot/" + self.base_link_name
         self.scene.height_scanner_base.prim_path = "{ENV_REGEX_NS}/Robot/" + self.base_link_name
         self.scene.terrain.terrain_type = "generator"

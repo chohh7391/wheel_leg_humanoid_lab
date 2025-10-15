@@ -497,7 +497,7 @@
     <parent link="right_thigh"/>
     <child link="right_calf"/>
     <axis xyz="0.0 1.0 0.0"/>
-    <limit effort="120" lower="-2.094395" upper="0.0" velocity="5.02"/>
+    <limit effort="120" lower="0.0" upper="2.094395" velocity="5.02"/>
   </joint>
   <joint name="right_ankle_1" type="revolute">
     <origin rpy="0 0 0" xyz="-0.00045 0.03575 -0.34005"/>

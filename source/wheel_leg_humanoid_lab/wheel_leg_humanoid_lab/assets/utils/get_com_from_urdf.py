@@ -9,7 +9,7 @@ p.setGravity(0, 0, -9.81)
 
 # Load URDF
 robot_id = p.loadURDF(
-    "/home/home/robot_lab/source/robot_lab/data/Robots/unitree/g1_description/urdf/g1_23dof_rev_1_0.urdf",
+    "/home/home/wheel_leg_humanoid_lab/source/wheel_leg_humanoid_lab/wheel_leg_humanoid_lab/assets/wheel_leg_humanoid_description/urdf/wheel_leg_humanoid.urdf",
     [0, 0, 0], useFixedBase=True)
 
 p.resetDebugVisualizerCamera(cameraDistance=1.5,
@@ -17,16 +17,16 @@ p.resetDebugVisualizerCamera(cameraDistance=1.5,
                              cameraPitch=-30,
                              cameraTargetPosition=[0, 0.5, 0])
 
-torso_index = -1 if p.getBodyInfo(robot_id)[0].decode('utf-8') == "torso_link" else None
+torso_index = -1 if p.getBodyInfo(robot_id)[0].decode('utf-8') == "waist" else None
 if torso_index is None:
     num_joints = p.getNumJoints(robot_id)
     for i in range(num_joints):
         link_name = p.getJointInfo(robot_id, i)[12].decode('utf-8')
-        if link_name == "torso_link":
+        if link_name == "waist":
             torso_index = i
             break
 if torso_index is None:
-    raise ValueError("Could not find a link named 'torso_link'. Please check your URDF.")
+    raise ValueError("Could not find a link named 'waist'. Please check your URDF.")
 
 torso_pos, torso_ori = p.getLinkState(robot_id, torso_index)[:2]
 
