@@ -54,7 +54,7 @@ class SceneCfg(InteractiveSceneCfg):
             restitution_combine_mode="multiply",
             static_friction=1.0,
             dynamic_friction=1.0,
-            restitution=0.0,
+            restitution=1.0,
         ),
         visual_material=sim_utils.MdlFileCfg(
             mdl_path=f"{ISAACLAB_NUCLEUS_DIR}/Materials/TilesMarbleSpiderWhiteBrickBondHoned/TilesMarbleSpiderWhiteBrickBondHoned.mdl",
@@ -70,7 +70,7 @@ class SceneCfg(InteractiveSceneCfg):
         prim_path="{ENV_REGEX_NS}/Robot/base",
         offset=RayCasterCfg.OffsetCfg(pos=(0.0, 0.0, 20.0)),
         ray_alignment="yaw",
-        pattern_cfg=patterns.GridPatternCfg(resolution=0.1, size=(1.6, 1.0)),
+        pattern_cfg=patterns.GridPatternCfg(resolution=0.1, size=[1.6, 1.0]),
         debug_vis=False,
         mesh_prim_paths=["/World/ground"],
     )
@@ -262,22 +262,10 @@ class EventCfg:
         func=mdp.randomize_rigid_body_material,
         mode="startup",
         params={
-            "asset_cfg": SceneEntityCfg("robot", body_names="^(?!(left_wheel|right_wheel|left_foot_wheel_L|left_foot_wheel_R|right_foot_wheel_L|right_foot_wheel_R)$).*"),
+            "asset_cfg": SceneEntityCfg("robot", body_names=".*"),
             "static_friction_range": (0.3, 1.0),
             "dynamic_friction_range": (0.3, 0.8),
             "restitution_range": (0.0, 0.5),
-            "num_buckets": 64,
-        },
-    )
-
-    randomize_wheel_friction = EventTerm(
-        func=mdp.randomize_rigid_body_material,
-        mode="startup",
-        params={
-            "asset_cfg": SceneEntityCfg("robot", body_names="(left_wheel|right_wheel|left_foot_wheel_L|left_foot_wheel_R|right_foot_wheel_L|right_foot_wheel_R)"),
-            "static_friction_range": (5.0, 6.0),
-            "dynamic_friction_range": (5.0, 5.5),
-            "restitution_range": (0.0, 0.2),
             "num_buckets": 64,
         },
     )
@@ -380,13 +368,6 @@ class EventCfg:
         interval_range_s=(10.0, 15.0),
         params={"velocity_range": {"x": (-0.5, 0.5), "y": (-0.5, 0.5)}},
     )
-
-    # push_robot_test = EventTerm(
-    #     func=mdp.push_by_setting_velocity,
-    #     mode="interval",
-    #     interval_range_s=(0.0, 0.0),
-    #     params={"velocity_range": {"x": (0.0, 0.0), "y": (0.0, 0.0), "z": (0.3, 0.3)}},
-    # )
 
 
 @configclass
@@ -681,11 +662,6 @@ class TerminationsCfg:
         params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=""), "threshold": 1.0},
     )
 
-    # com_height = DoneTerm(
-    #     func=mdp.illegal_com_height,
-    #     params={"sensor_cfg": SceneEntityCfg("contact_forces", body_names=""), "threshold": 1.0},
-    # )
-
 
 @configclass
 class CurriculumCfg:
@@ -712,7 +688,7 @@ class LocomotionVelocityRoughEnvCfg(ManagerBasedRLEnvCfg):
     """Configuration for the locomotion velocity-tracking environment."""
 
     # Scene settings
-    scene: SceneCfg = SceneCfg(num_envs=8192, env_spacing=2.5)
+    scene: SceneCfg = SceneCfg(num_envs=4096, env_spacing=2.5)
     # Basic settings
     observations: ObservationsCfg = ObservationsCfg()
     actions: ActionsCfg = ActionsCfg()

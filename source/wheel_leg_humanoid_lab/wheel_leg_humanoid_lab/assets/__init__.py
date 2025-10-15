@@ -1,7 +1,9 @@
-from .kimm_wheel_legged_robot import WHEEL_LEG_HUMANOID_CFG
+# from .kimm_wheel_legged_robot import WHEEL_LEG_HUMANOID_CFG
 from .kimm_wheel_legged_robot_driving_mode import (
     WHEEL_LEG_HUMANOID_DRIVING_MODE_CFG,
     WHEEL_LEG_HUMANOID_DRIVING_MODE_FIXED_HIP_CFG,
     WHEEL_LEG_HUMANOID_DRIVING_MODE_FIXED_ANKLE_CFG,
     WHEEL_LEG_HUMANOID_DRIVING_MODE_FIXED_HIP_ANKLE_CFG
 )
+
+from .wheel_leg_humanoid import WHEEL_LEG_HUMANOID_CFG

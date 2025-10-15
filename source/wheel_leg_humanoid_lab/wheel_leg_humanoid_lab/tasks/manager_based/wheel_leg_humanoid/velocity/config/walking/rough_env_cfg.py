@@ -18,8 +18,43 @@ from wheel_leg_humanoid_lab.tasks.manager_based.wheel_leg_humanoid.velocity.velo
 
 @configclass
 class WheelLegHumanoidWalkingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
-    base_link_name = "torso_link"
-    foot_link_name = ".*_foot_link"
+    base_link_name = "base_link"
+    foot_link_name = ".*_ankle_2"
+    # fmt: off
+    joint_names = [
+        # waist
+        "waist",
+
+        # pelvis
+        "right_pelvis_1",
+        "right_pelvis_2",
+        "left_pelvis_1",
+        "left_pelvis_2",
+
+        # thigh
+        "right_thigh",
+        "left_thigh",
+
+        # calf
+        "right_calf",
+        "left_calf",
+
+        # ankle
+        "right_ankle_1",
+        "right_ankle_2",
+        "left_ankle_1",
+        "left_ankle_2",
+
+        # # wheel
+        # "right_wheel",
+        # "left_wheel",
+
+        # foot wheel (passive)
+        # "right_foot_wheel_R",
+        # "right_foot_wheel_L",
+        # "left_foot_wheel_R",
+        # "left_foot_wheel_L",
+    ]
 
     def __post_init__(self):
         # post init of parent
@@ -37,14 +72,14 @@ class WheelLegHumanoidWalkingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         self.observations.policy.joint_vel.scale = 0.05
         self.observations.policy.base_lin_vel = None
         self.observations.policy.height_scan = None
-        # self.observations.policy.joint_pos.params["asset_cfg"].joint_names = self.joint_names
-        # self.observations.policy.joint_vel.params["asset_cfg"].joint_names = self.joint_names
+        self.observations.policy.joint_pos.params["asset_cfg"].joint_names = self.joint_names
+        self.observations.policy.joint_vel.params["asset_cfg"].joint_names = self.joint_names
 
         # ------------------------------Actions------------------------------
         # reduce action scale
         self.actions.joint_pos.scale = 0.25
         self.actions.joint_pos.clip = {".*": (-100.0, 100.0)}
-        # self.actions.joint_pos.joint_names = self.joint_names
+        self.actions.joint_pos.joint_names = self.joint_names
 
         # ------------------------------Events------------------------------
         self.events.randomize_rigid_body_mass_base.params["asset_cfg"].body_names = [self.base_link_name]
@@ -63,33 +98,32 @@ class WheelLegHumanoidWalkingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         self.rewards.ang_vel_xy_l2.weight = -0.1
         self.rewards.flat_orientation_l2.weight = -0.2
         self.rewards.base_height_l2.weight = 0
-        self.rewards.base_height_l2.params["target_height"] = 0.0
+        self.rewards.base_height_l2.params["target_height"] = 0
         self.rewards.base_height_l2.params["asset_cfg"].body_names = [self.base_link_name]
         self.rewards.body_lin_acc_l2.weight = 0
         self.rewards.body_lin_acc_l2.params["asset_cfg"].body_names = [self.base_link_name]
 
         # Joint penalties
         self.rewards.joint_torques_l2.weight = -1.5e-7
+        self.rewards.joint_torques_l2.params["asset_cfg"].joint_names = [".*_pelvis_.*", ".*_thigh", ".*_calf", ".*_ankle_.*"]
         self.rewards.joint_vel_l2.weight = 0
         self.rewards.joint_acc_l2.weight = -1.25e-7
-        # TODO: If joint is not fixed, uncomment the following lines
-        # self.rewards.create_joint_deviation_l1_rewterm("joint_deviation_hip_l1", -0.2, [".*_hip_yaw_joint", ".*_hip_roll_joint"])
-        # # arm is not used for now
-        # # TODO: If arms are used in the future, uncomment the following line
-        # # self.rewards.create_joint_deviation_l1_rewterm("joint_deviation_arms_l1", -0.2, [".*_shoulder_.*", ".*_elbow"])
-        # self.rewards.create_joint_deviation_l1_rewterm("joint_deviation_torso_l1", -0.1, ["torso_joint"])
+        self.rewards.joint_acc_l2.params["asset_cfg"].joint_names = [".*_pelvis_.*", ".*_thigh", ".*_calf"]
+        self.rewards.create_joint_deviation_l1_rewterm("joint_deviation_hip_l1", -0.1, [".*_thigh", ".*_pelvis_2"])
+        # self.rewards.create_joint_deviation_l1_rewterm("joint_deviation_arms_l1", -0.1, [".*shoulder.*", ".*elbow.*"])
+        self.rewards.create_joint_deviation_l1_rewterm("joint_deviation_waist_l1", -0.1, ["waist"])
         self.rewards.joint_pos_limits.weight = -0.5
         self.rewards.joint_vel_limits.weight = 0
         self.rewards.joint_power.weight = 0
         self.rewards.stand_still.weight = 0
         self.rewards.joint_pos_penalty.weight = -1.0
         self.rewards.joint_mirror.weight = 0
-        self.rewards.joint_mirror.params["mirror_joints"] = [["", ""]]
+        self.rewards.joint_mirror.params["mirror_joints"] = [["left_(pelvis|thigh|calf|ankle).*", "right_(pelvis|thigh|calf|ankle).*"]]
 
         # Action penalties
         self.rewards.action_rate_l2.weight = -0.005
         self.rewards.action_mirror.weight = 0
-        self.rewards.action_mirror.params["mirror_joints"] = [["", ""]]
+        self.rewards.action_mirror.params["mirror_joints"] = [["left_(pelvis|thigh|calf|ankle).*", "right_(pelvis|thigh|calf|ankle).*"]]
 
         # Contact sensor
         self.rewards.undesired_contacts.weight = 0
@@ -104,9 +138,9 @@ class WheelLegHumanoidWalkingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         self.rewards.track_ang_vel_z_exp.func = mdp.track_ang_vel_z_world_exp
 
         # Others
-        self.rewards.feet_air_time.weight = 1.0
+        self.rewards.feet_air_time.weight = 0.25
         self.rewards.feet_air_time.func = mdp.feet_air_time_positive_biped
-        self.rewards.feet_air_time.params["threshold"] = 0.6
+        self.rewards.feet_air_time.params["threshold"] = 0.4
         self.rewards.feet_air_time.params["sensor_cfg"].body_names = [self.foot_link_name]
         self.rewards.feet_contact.weight = 0
         self.rewards.feet_contact.params["sensor_cfg"].body_names = [self.foot_link_name]
