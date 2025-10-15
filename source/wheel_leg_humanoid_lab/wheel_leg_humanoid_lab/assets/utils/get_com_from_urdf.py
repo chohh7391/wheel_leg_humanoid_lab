@@ -9,7 +9,7 @@ p.setGravity(0, 0, -9.81)
 
 # Load URDF
 robot_id = p.loadURDF(
-    "/home/home/wheel_leg_humanoid_lab/source/wheel_leg_humanoid_lab/wheel_leg_humanoid_lab/assets/wheel_leg_humanoid_description/urdf/wheel_leg_humanoid.urdf",
+    "/home/home/test_ws/src/wheel_leg_humanoid_origin/urdf/wheel_leg_humanoid_origin.urdf",
     [0, 0, 0], useFixedBase=True)
 
 p.resetDebugVisualizerCamera(cameraDistance=1.5,

@@ -2,9 +2,9 @@
 <robot name="wheel_leg_humanoid">
   <link name="base_link">
     <inertial>
-      <origin xyz="5E-05 0.00081 0.23443" rpy="0 0 0" />
-      <mass value="12.883" />
-      <inertia ixx="1.0303" ixy="4.692E-05" ixz="-0.00051106" iyy="0.99441" iyz="0.0018778" izz="0.08513" />
+      <origin xyz="0.00013736030498253833 0.00048620697641956807 0.22825200933073794" rpy="0 0 0"/>
+      <mass value="12.883"/>
+      <inertia ixx="1.056351" iyy="0.940551" izz="0.277884" ixy="-0.000232" iyz="0.002355" ixz="0.001343"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.4078"/>
@@ -24,9 +24,9 @@
   </link>
   <link name="waist">
     <inertial>
-      <origin xyz="0.0004 0 -0.0752" rpy="0 0 0" />
-      <mass value="2.7388" />
-      <inertia ixx="0.02356351129" ixy="3E-11" ixz="-8.703094E-05" iyy="0.02002925603" iyz="1.89245E-06" izz="0.00722450305" />
+      <origin xyz="0.0002944610871751539 3.2856798523741917e-09 -0.48935317591034744" rpy="0 0 0"/>
+      <mass value="2.7388"/>
+      <inertia ixx="0.025579" iyy="0.015644" izz="0.022699" ixy="0.0" iyz="-8e-06" ixz="1.3e-05"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -46,9 +46,9 @@
   </link>
   <link name="right_pelvis_1">
     <inertial>
-      <origin xyz="0.00249 -0.07033 0.00017" rpy="0 0 0" />
-      <mass value="1.32134" />
-      <inertia ixx="0.00819386088" ixy="-0.00027928127" ixz="-3.7646E-06" iyy="0.00152401352" iyz="-1.094834E-05" izz="0.00836573547" />
+      <origin xyz="0.002831732813733045 -0.07436254818905469 0.00010580202356713642" rpy="0 0 0"/>
+      <mass value="1.32134"/>
+      <inertia ixx="0.006131" iyy="0.004605" izz="0.005891" ixy="0.000157" iyz="-1e-05" ixz="9e-06"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="0.0 0.06325 0.494"/>
@@ -68,9 +68,9 @@
   </link>
   <link name="right_pelvis_2">
     <inertial>
-      <origin xyz="-0.00154 -0.0001 -0.0843" rpy="0 0 0" />
-      <mass value="1.24911" />
-      <inertia ixx="0.0110154986" ixy="-1.69654E-06" ixz="2.40748E-05" iyy="0.01131357755" iyz="7.99258E-06" izz="0.00156162136" />
+      <origin xyz="-0.03895116959652797 -8.305068577602048e-05 -0.08209319574594454" rpy="0 0 0"/>
+      <mass value="1.24911"/>
+      <inertia ixx="0.007177" iyy="0.008082" izz="0.005668" ixy="3e-06" iyz="4e-06" ixz="0.000172"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="-0.03875 0.1424 0.494"/>
@@ -92,9 +92,9 @@
   <!-- 제공된 urdf의 경우 thigh 와 wheel을 합쳐서 link가 구성되어 있으므로 inertial와 mass가 어떻게 나뉘는 지 파악 후에 수정 -->
   <link name="right_thigh">
     <inertial>
-      <origin rpy="0 0 0" xyz="-0.00045586825902857133 -0.01414641938290856 -0.1563447665998967"/>
-      <mass value="5.25364"/>
-      <inertia ixx="0.081591" ixy="-5.5e-05" ixz="2.2e-05" iyy="0.073239" iyz="-0.003139" izz="0.021138"/>
+      <origin xyz="-0.00045586825902857133 -0.01414641938290856 -0.1563447665998967" rpy="0 0 0"/>
+      <mass value="4.25364"/>
+      <inertia ixx="0.081591" iyy="0.073239" izz="0.021138" ixy="-5.5e-05" iyz="-0.003139" ixz="2.2e-05"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="-0.0009 0.1424 0.60975"/>
@@ -114,9 +114,9 @@
   </link>
   <link name="right_wheel">
     <inertial>
-      <origin rpy="0 0 0" xyz="4.7966024178600075e-08 -0.04751998475944105 3.2792151178906437e-06"/>
+      <origin xyz="4.7966024178600075e-08 -0.04751998475944105 3.2792151178906437e-06" rpy="0 0 0"/>
       <mass value="1.0"/>
-      <inertia ixx="0.028695" ixy="-0.0" ixz="0.0" iyy="0.054854" iyz="-1e-06" izz="0.028695"/>
+      <inertia ixx="0.028695" iyy="0.054854" izz="0.028695" ixy="-0.0" iyz="-1e-06" ixz="0.0"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="-0.00045 0.22145 0.84395"/>
@@ -138,9 +138,9 @@
 
   <link name="right_calf">
     <inertial>
-      <origin xyz="0.00119 0.00115 -0.17167" rpy="0 0 0" />
-      <mass value="1.88334" />
-      <inertia ixx="0.07026719937" ixy="-2.65E-09" ixz="-0.00034734288" iyy="0.07022396694" iyz="0.00016741353" izz="0.00142227841" />
+      <origin xyz="0.0005434557834086689 0.039775701924267826 -0.16917701101257487" rpy="0 0 0"/>
+      <mass value="1.88334"/>
+      <inertia ixx="0.046581" iyy="0.046862" izz="0.005148" ixy="4e-06" iyz="-0.000717" ixz="-9e-05"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="-0.0009 0.18165 0.8439"/>
@@ -160,9 +160,9 @@
   </link>
   <link name="right_ankle_1">
     <inertial>
-      <origin xyz="0 -0.00183 -0.01735" rpy="0 0 0" />
-      <mass value="0.26578" />
-      <inertia ixx="0.00026119165" ixy="0" ixz="0" iyy="0.00021872355" iyz="0" izz="7.85127E-05" />
+      <origin xyz="3.1020102935971905e-12 0.0028558587637649846 -0.02504887220015961" rpy="0 0 0"/>
+      <mass value="0.26578"/>
+      <inertia ixx="0.000349" iyy="0.000313" izz="0.000165" ixy="0.0" iyz="9e-06" ixz="0.0"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="-0.00045 0.1459 1.18395"/>
@@ -184,9 +184,9 @@
   <!-- 제공된 asset의 경우 ankle_2 와 foot_wheels를 합쳐서 link가 구성되어 있으므로 inertial와 mass가 어떻게 나뉘는 지 파악 후에 수정 -->
   <link name="right_ankle_2">
     <inertial>
-      <origin rpy="0 0 0" xyz="0.008905018781294245 0.00014833887182574834 -0.024820135987042802"/>
-      <mass value="1.55786"/>
-      <inertia ixx="0.004308" ixy="5e-06" ixz="-0.000997" iyy="0.030695" iyz="1.6e-05" izz="0.032"/>
+      <origin xyz="0.008905018781294245 0.00014833887182574834 -0.024820135987042802" rpy="0 0 0"/>
+      <mass value="1.35786"/>
+      <inertia ixx="0.004308" iyy="0.030695" izz="0.032" ixy="5e-06" iyz="1.6e-05" ixz="-0.000997"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="-0.03395 0.1424 1.22595"/>
@@ -206,9 +206,9 @@
   </link>
   <link name="right_foot_wheel_R">
     <inertial>
-      <origin rpy="0 0 0" xyz="-0.00044999999691558434 -0.0020989227836123447 -0.00017125962411657092"/>
-      <mass value="0.235985283852645"/>
-      <inertia ixx="4.1e-05" ixy="-0.0" ixz="-0.0" iyy="7.2e-05" iyz="-0.0" izz="4.1e-05"/>
+      <origin xyz="-0.00044999999691558434 -0.0020989227836123447 -0.00017125962411657092" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="4.1e-05" iyy="7.2e-05" izz="4.1e-05" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="-0.155875 0.197053 1.226548"/>
@@ -228,9 +228,9 @@
   </link>
   <link name="right_foot_wheel_L">
     <inertial>
-      <origin rpy="0 0 0" xyz="-0.00044999999696523907 0.0019027760279444195 7.126440070526208e-05"/>
-      <mass value="0.235985283852645"/>
-      <inertia ixx="4.1e-05" ixy="0.0" ixz="-0.0" iyy="7.2e-05" iyz="-0.0" izz="4.1e-05"/>
+      <origin xyz="-0.00044999999696523907 0.0019027760279444195 7.126440070526208e-05" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="4.1e-05" iyy="7.2e-05" izz="4.1e-05" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="-0.155875 0.087555 1.227052"/>
@@ -252,9 +252,9 @@
 
   <link name="left_pelvis_1">
     <inertial>
-      <origin xyz="0.00249 0.07033 -0.00017" rpy="0 0 0" />
-      <mass value="1.32134" />
-      <inertia ixx="0.00819386088" ixy="0.00027928127" ixz="3.7646E-06" iyy="0.00152401352" iyz="-1.094834E-05" izz="0.00836573547" />
+      <origin xyz="0.0023080880626979035 0.07428197139205256 -0.00010756435390885111" rpy="0 0 0"/>
+      <mass value="1.32134"/>
+      <inertia ixx="0.006117" iyy="0.004526" izz="0.005809" ixy="-0.000146" iyz="-1e-05" ixz="-9e-06"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="-0.0 -0.06325 0.494"/>
@@ -274,9 +274,9 @@
   </link>
   <link name="left_pelvis_2">
     <inertial>
-      <origin xyz="-0.00154 -0.0001 -0.0843" rpy="0 0 0" />
-      <mass value="1.24911" />
-      <inertia ixx="0.0110154986" ixy="-1.69654E-06" ixz="2.40748E-05" iyy="0.01131357755" iyz="7.99258E-06" izz="0.00156162136" />
+      <origin xyz="-0.03696708466764814 1.6817307456173936e-05 -0.0820505119506949" rpy="0 0 0"/>
+      <mass value="1.24911"/>
+      <inertia ixx="0.007193" iyy="0.008099" izz="0.00567" ixy="3e-06" iyz="4e-06" ixz="0.000178"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="-0.03625 -0.1424 0.494"/>
@@ -298,9 +298,9 @@
   <!-- 제공된 urdf의 경우 thigh 와 wheel을 합쳐서 link가 구성되어 있으므로 inertial와 mass가 어떻게 나뉘는 지 파악 후에 수정 -->
   <link name="left_thigh">
     <inertial>
-      <origin rpy="0 0 0" xyz="5.5869728958680565e-05 0.014154850395600549 -0.1563301380696539"/>
-      <mass value="5.25364"/>
-      <inertia ixx="0.081573" ixy="-5.5e-05" ixz="-2.2e-05" iyy="0.073225" iyz="0.003147" izz="0.021133"/>
+      <origin xyz="5.5869728958680565e-05 0.014154850395600549 -0.1563301380696539" rpy="0 0 0"/>
+      <mass value="4.25364"/>
+      <inertia ixx="0.081573" iyy="0.073225" izz="0.021133" ixy="-5.5e-05" iyz="0.003147" ixz="-2.2e-05"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="0.0001 -0.1424 0.60975"/>
@@ -320,9 +320,9 @@
   </link>
   <link name="left_wheel">
     <inertial>
-      <origin rpy="0 0 0" xyz="-5.18166456317572e-08 0.04751998042731451 3.3232989318232597e-06"/>
+      <origin xyz="-5.18166456317572e-08 0.04751998042731451 3.3232989318232597e-06" rpy="0 0 0"/>
       <mass value="1.0"/>
-      <inertia ixx="0.028695" ixy="-0.0" ixz="-0.0" iyy="0.054854" iyz="1e-06" izz="0.028695"/>
+      <inertia ixx="0.028695" iyy="0.054854" izz="0.028695" ixy="-0.0" iyz="1e-06" ixz="-0.0"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="5e-05 -0.22145 0.84395"/>
@@ -344,9 +344,9 @@
 
   <link name="left_calf">
     <inertial>
-      <origin xyz="-0.00119 -0.00115 -0.17167" rpy="0 0 0" />
-      <mass value="1.88334" />
-      <inertia ixx="0.07026719937" ixy="-2.65E-09" ixz="0.00034734288" iyy="0.07022396694" iyz="-0.00016741353" izz="0.00142227841" />
+      <origin xyz="-0.0009431248581844263 -0.0397857722864402 -0.16912067169967682" rpy="0 0 0"/>
+      <mass value="1.88334"/>
+      <inertia ixx="0.046648" iyy="0.046927" izz="0.00515" ixy="4e-06" iyz="0.000728" ixz="9e-05"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="0.0001 -0.18165 0.8439"/>
@@ -366,9 +366,9 @@
   </link>
   <link name="left_ankle_1">
     <inertial>
-      <origin xyz="0 0.00183 -0.01735" rpy="0 0 0" />
-      <mass value="0.26578" />
-      <inertia ixx="0.00026119165" ixy="0" ixz="0" iyy="0.00021872355" iyz="0" izz="7.85127E-05" />
+      <origin xyz="-0.0003046456040074277 -0.002967588732325721 -0.027989141928971506" rpy="0 0 0"/>
+      <mass value="0.26578"/>
+      <inertia ixx="0.00038" iyy="0.00041" izz="0.000234" ixy="-0.0" iyz="-1e-05" ixz="-3e-06"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="5e-05 -0.1459 1.18395"/>
@@ -390,9 +390,9 @@
   <!-- 제공된 asset의 경우 ankle_2 와 foot_wheels를 합쳐서 link가 구성되어 있으므로 inertial와 mass가 어떻게 나뉘는 지 파악 후에 수정 -->
   <link name="left_ankle_2">
     <inertial>
-      <origin rpy="0 0 0" xyz="0.013515322751595595 0.00019384239713590712 -0.026186141188644596"/>
-      <mass value="1.55786"/>
-      <inertia ixx="0.003997" ixy="1.1e-05" ixz="-0.001664" iyy="0.028145" iyz="1.3e-05" izz="0.02973"/>
+      <origin xyz="0.013515322751595595 0.00019384239713590712 -0.026186141188644596" rpy="0 0 0"/>
+      <mass value="1.35786"/>
+      <inertia ixx="0.003997" iyy="0.028145" izz="0.02973" ixy="1.1e-05" iyz="1.3e-05" ixz="-0.001664"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="-0.03345 -0.1424 1.22595"/>
@@ -412,9 +412,9 @@
   </link>
   <link name="left_foot_wheel_R">
     <inertial>
-      <origin rpy="0 0 0" xyz="4.9999996964006366e-05 -0.0018997011603745367 -9.264484823523489e-05"/>
-      <mass value="0.2359852838526443"/>
-      <inertia ixx="4.1e-05" ixy="0.0" ixz="-0.0" iyy="7.2e-05" iyz="-0.0" izz="4.1e-05"/>
+      <origin xyz="4.9999996964006366e-05 -0.0018997011603745367 -9.264484823523489e-05" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="4.1e-05" iyy="7.2e-05" izz="4.1e-05" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="-0.154875 -0.087549 1.226712"/>
@@ -434,9 +434,9 @@
   </link>
   <link name="left_foot_wheel_L">
     <inertial>
-      <origin rpy="0 0 0" xyz="4.9999996916211265e-05 0.0021002625918003226 -8.3545761804249e-06"/>
-      <mass value="0.23598528385264375"/>
-      <inertia ixx="4.1e-05" ixy="0.0" ixz="-0.0" iyy="7.2e-05" iyz="-0.0" izz="4.1e-05"/>
+      <origin xyz="4.9999996916211265e-05 0.0021002625918003226 -8.3545761804249e-06" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="4.1e-05" iyy="7.2e-05" izz="4.1e-05" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
     </inertial>
     <visual>
       <origin rpy="0 0 0" xyz="-0.154875 -0.197049 1.226887"/>
