@@ -30,7 +30,7 @@ class WheelLegHumanoidDrivingActionsCfg(ActionsCfg):
     )
 
     joint_vel = mdp.JointVelocityActionCfg(
-        asset_name="robot", joint_names=[""], scale=5.0, use_default_offset=True, clip=None, preserve_order=True
+        asset_name="robot", joint_names=[""], scale=500.0, use_default_offset=True, clip=None, preserve_order=True
     )
 
 
