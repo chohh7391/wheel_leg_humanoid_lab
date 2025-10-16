@@ -8,7 +8,7 @@ from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, R
 @configclass
 class WheelLegHumanoidWalkingRoughPPORunnerCfg(RslRlOnPolicyRunnerCfg):
     num_steps_per_env = 24
-    max_iterations = 3000
+    max_iterations = 6000
     save_interval = 50
     experiment_name = "walking/rough"
     policy = RslRlPpoActorCriticCfg(

@@ -8,12 +8,13 @@ from isaaclab_rl.rsl_rl import RslRlOnPolicyRunnerCfg, RslRlPpoActorCriticCfg, R
 @configclass
 class WheelLegHumanoidDrivingRoughPPORunnerCfg(RslRlOnPolicyRunnerCfg):
     num_steps_per_env = 24
-    max_iterations = 200000
-    save_interval = 1000
-    experiment_name = "wheel_leg_humanoid/driving/rough"
-    empirical_normalization = False
+    max_iterations = 20000
+    save_interval = 100
+    experiment_name = "driving/rough"
     policy = RslRlPpoActorCriticCfg(
         init_noise_std=1.0,
+        actor_obs_normalization=False,
+        critic_obs_normalization=False,
         actor_hidden_dims=[512, 256, 128],
         critic_hidden_dims=[512, 256, 128],
         activation="elu",
@@ -33,30 +34,6 @@ class WheelLegHumanoidDrivingRoughPPORunnerCfg(RslRlOnPolicyRunnerCfg):
         max_grad_norm=1.0,
     )
 
-@configclass
-class WheelLegHumanoidDrivingFixedHipRoughPPORunnerCfg(WheelLegHumanoidDrivingRoughPPORunnerCfg):
-    def __post_init__(self):
-        super().__post_init__()
-        self.experiment_name = "wheel_leg_humanoid/driving/fixed_hip/rough"
-
-@configclass
-class WheelLegHumanoidDrivingFixedHipAnkleRoughPPORunnerCfg(WheelLegHumanoidDrivingRoughPPORunnerCfg):
-    def __post_init__(self):
-        super().__post_init__()
-        self.experiment_name = "wheel_leg_humanoid/driving/fixed_hip_ankle/rough"
-
-@configclass
-class WheelLegHumanoidDrivingFixedAnkleRoughPPORunnerCfg(WheelLegHumanoidDrivingRoughPPORunnerCfg):
-    def __post_init__(self):
-        super().__post_init__()
-        self.experiment_name = "wheel_leg_humanoid/driving/fixed_ankle/rough"
-
-@configclass
-class WheelLegHumanoidDrivingRollingRoughPPORunnerCfg(WheelLegHumanoidDrivingRoughPPORunnerCfg):
-    def __post_init__(self):
-        super().__post_init__()
-        self.experiment_name = "wheel_leg_humanoid/driving/rolling/rough"
-
 
 # Configuration for PPO training on flat terrain
 @configclass
@@ -64,37 +41,5 @@ class WheelLegHumanoidDrivingFlatPPORunnerCfg(WheelLegHumanoidDrivingRoughPPORun
     def __post_init__(self):
         super().__post_init__()
 
-        self.max_iterations = 100000
-        self.experiment_name = "wheel_leg_humanoid/driving/flat"
-
-@configclass
-class WheelLegHumanoidDrivingFixedHipFlatPPORunnerCfg(WheelLegHumanoidDrivingRoughPPORunnerCfg):
-    def __post_init__(self):
-        super().__post_init__()
-
-        self.max_iterations = 100000
-        self.experiment_name = "wheel_leg_humanoid/driving/fixed_hip/flat"
-
-@configclass
-class WheelLegHumanoidDrivingFixedAnkleFlatPPORunnerCfg(WheelLegHumanoidDrivingRoughPPORunnerCfg):
-    def __post_init__(self):
-        super().__post_init__()
-
-        self.max_iterations = 100000
-        self.experiment_name = "wheel_leg_humanoid/driving/fixed_ankle/flat"
-
-@configclass
-class WheelLegHumanoidDrivingFixedHipAnkleFlatPPORunnerCfg(WheelLegHumanoidDrivingRoughPPORunnerCfg):
-    def __post_init__(self):
-        super().__post_init__()
-
-        self.max_iterations = 100000
-        self.experiment_name = "wheel_leg_humanoid/driving/fixed_hip_ankle/flat"
-
-@configclass
-class WheelLegHumanoidDrivingRollingFlatPPORunnerCfg(WheelLegHumanoidDrivingRoughPPORunnerCfg):
-    def __post_init__(self):
-        super().__post_init__()
-
-        self.max_iterations = 100000
-        self.experiment_name = "wheel_leg_humanoid/driving/rolling/flat"
+        self.max_iterations = 5000
+        self.experiment_name = "driving/flat"

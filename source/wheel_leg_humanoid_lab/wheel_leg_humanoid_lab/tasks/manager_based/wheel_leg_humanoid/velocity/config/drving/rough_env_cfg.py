@@ -20,26 +20,6 @@ from wheel_leg_humanoid_lab.tasks.manager_based.wheel_leg_humanoid.velocity.velo
 from wheel_leg_humanoid_lab.assets import WHEEL_LEG_HUMANOID_CFG
 import numpy as np
 
-# use other terrain
-ROUGH_ROAD_CFG = terrain_gen.TerrainGeneratorCfg(
-    size=(8.0, 8.0),
-    border_width=20.0,
-    num_rows=10,
-    num_cols=20,
-    horizontal_scale=0.1,
-    vertical_scale=0.005,
-    slope_threshold=0.75,
-    difficulty_range=(0.0, 1.0),
-    use_cache=False,
-    sub_terrains={
-        "flat": terrain_gen.MeshPlaneTerrainCfg(
-            proportion=0.4,
-        ),
-        "random_rough": terrain_gen.HfRandomUniformTerrainCfg(
-            proportion=0.5, noise_range=(0.01, 0.05), noise_step=0.02, border_width=0.25
-        ),
-    },
-)
 
 @configclass
 class WheelLegHumanoidDrivingActionsCfg(ActionsCfg):
@@ -77,32 +57,21 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
     rewards: WheelLegHumanoidDrivingRewardsCfg = WheelLegHumanoidDrivingRewardsCfg()
 
     base_link_name = "base_link"
-    foot_link_name = ".*_foot_link" # foot_link is contained in knee_link
-    wheel_link_name = [
-        "left_wheel", "right_wheel",
-        "left_foot_wheel_L",  "left_foot_wheel_R", "right_foot_wheel_L", "right_foot_wheel_R"
-    ]
+    foot_link_name = ".*_ankle_2"
 
     # fmt: off
-    body_joint_names = [
-        "torso_joint"
+    waist_joint_names = [
+        "waist"
     ]
     leg_joint_names = [
-        # left
-        "left_hip_roll_joint", "left_hip_yaw_joint", "left_hip_pitch_joint",
-        "left_knee_joint",
-        "left_ankle_pitch_joint", "left_ankle_roll_joint",
-
-        # right
-        "right_hip_roll_joint", "right_hip_yaw_joint", "right_hip_pitch_joint",
-        "right_knee_joint",
-        "right_ankle_pitch_joint", "right_ankle_roll_joint",
+        "right_pelvis_1", "right_pelvis_2", "right_thigh", "right_calf", "right_ankle_1", "right_ankle_2",
+        "left_pelvis_1", "left_pelvis_2", "left_thigh", "left_calf", "left_ankle_1", "left_ankle_2",
     ]
     wheel_joint_names = [
-        "left_wheel_joint", "right_wheel_joint",
+        "right_wheel",
+        "left_wheel"
     ]
-    joint_names = body_joint_names + leg_joint_names + wheel_joint_names
-    # fmt: on
+    joint_names = waist_joint_names + leg_joint_names + wheel_joint_names
 
     def __post_init__(self):
         # post init of parent
@@ -110,18 +79,15 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
 
         # ------------------------------Sence------------------------------
         self.scene.robot = WHEEL_LEG_HUMANOID_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
-        self.scene.robot.init_state.pos = (0.0, 0.0, 0.53)
+        self.scene.robot.init_state.pos = (0.0, 0.0, 0.6)
         self.scene.robot.init_state.joint_pos.update({
-            "right_pelvis_1": np.deg2rad(-20.0),
-            "left_pelvis_1": np.deg2rad(-20.0),
-            "right_calf": np.deg2rad(-120.0),
-            "left_calf": np.deg2rad(-120.0),
+            "right_pelvis_1": float(np.deg2rad(-20.0)),
+            "left_pelvis_1": float(np.deg2rad(-20.0)),
+            "right_calf": float(np.deg2rad(119.99)),
+            "left_calf": float(np.deg2rad(119.99)),
         })
         self.scene.height_scanner.prim_path = "{ENV_REGEX_NS}/Robot/" + self.base_link_name
         self.scene.height_scanner_base.prim_path = "{ENV_REGEX_NS}/Robot/" + self.base_link_name
-        self.scene.terrain.terrain_type = "generator"
-        self.scene.terrain.terrain_generator = ROUGH_ROAD_CFG
-
 
         # ------------------------------Observations------------------------------
         self.observations.policy.joint_pos.func = mdp.joint_pos_rel_without_wheel
@@ -143,9 +109,7 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
 
         # ------------------------------Actions------------------------------
         # reduce action scale
-        self.actions.joint_pos.scale = {
-            ".*_hip_roll_joint": 0.125, "^(?!.*_hip_roll_joint).*": 0.25
-        }
+        self.actions.joint_pos.scale = {".*_pelvis_2": 0.125, "^(?!.*_pelvis_2).*": 0.25}
         self.actions.joint_vel.scale = 5.0
         self.actions.joint_pos.clip = {".*": (-100.0, 100.0)}
         self.actions.joint_vel.clip = {".*": (-100.0, 100.0)}
@@ -157,7 +121,7 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
             "pose_range": {
                 "x": (-0.5, 0.5),
                 "y": (-0.5, 0.5),
-                "z": (0.0, 0.1),
+                "z": (0.0, 0.0),
                 "roll": (-0.2, 0.2),
                 "pitch": (-0.2, 0.2),
                 "yaw": (-3.14, 3.14),
@@ -180,14 +144,14 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
 
         # ------------------------------Rewards------------------------------
         # General
-        self.rewards.is_terminated.weight = -200
+        self.rewards.is_terminated.weight = 0
 
         # Root penalties
         self.rewards.lin_vel_z_l2.weight = -2.0
         self.rewards.ang_vel_xy_l2.weight = -0.05
-        self.rewards.flat_orientation_l2.weight = -0.1
-        self.rewards.base_height_l2.weight = -2.0
-        self.rewards.base_height_l2.params["target_height"] = 0.45
+        self.rewards.flat_orientation_l2.weight = 0
+        self.rewards.base_height_l2.weight = 0
+        self.rewards.base_height_l2.params["target_height"] = 0.40
         self.rewards.base_height_l2.params["asset_cfg"].body_names = [self.base_link_name]
         self.rewards.body_lin_acc_l2.weight = 0
         self.rewards.body_lin_acc_l2.params["asset_cfg"].body_names = [self.base_link_name]
@@ -205,39 +169,34 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         self.rewards.joint_acc_l2.params["asset_cfg"].joint_names = self.leg_joint_names
         self.rewards.joint_acc_wheel_l2.weight = -2.5e-9
         self.rewards.joint_acc_wheel_l2.params["asset_cfg"].joint_names = self.wheel_joint_names
-        # self.rewards.create_joint_deviation_l1_rewterm("joint_deviation_hip_l1", -0.2, [".*_hip_joint"])
+        # self.rewards.create_joint_deviation_l1_rewterm("joint_deviation_pelvis_2_l1", -0.2, [".*pelvis_2"])
         self.rewards.joint_pos_limits.weight = -5.0
         self.rewards.joint_pos_limits.params["asset_cfg"].joint_names = self.leg_joint_names
-        self.rewards.joint_vel_limits.weight = 0.0
+        self.rewards.joint_vel_limits.weight = 0
         self.rewards.joint_vel_limits.params["asset_cfg"].joint_names = self.wheel_joint_names
         self.rewards.joint_power.weight = -2e-5
         self.rewards.joint_power.params["asset_cfg"].joint_names = self.leg_joint_names
         self.rewards.stand_still.weight = -2.0
-        self.rewards.stand_still.params["asset_cfg"].joint_names = self.leg_joint_names + self.body_joint_names
+        self.rewards.stand_still.params["asset_cfg"].joint_names = self.leg_joint_names
         self.rewards.joint_pos_penalty.weight = -1.0
         self.rewards.joint_pos_penalty.params["asset_cfg"].joint_names = self.leg_joint_names
-        # self.rewards.joint_pos_penalty.params["velocity_threshold"] = 100
-        self.rewards.wheel_vel_penalty.weight = -0.01
+        self.rewards.wheel_vel_penalty.weight = 0
         self.rewards.wheel_vel_penalty.params["sensor_cfg"].body_names = [self.foot_link_name]
         self.rewards.wheel_vel_penalty.params["asset_cfg"].joint_names = self.wheel_joint_names
-        self.rewards.joint_mirror.weight = -0.05
-        self.rewards.joint_mirror.params["mirror_joints"] = [
-            ["left_hip_roll_joint", "right_hip_roll_joint"],
-            ["left_hip_yaw_joint", "right_hip_yaw_joint"],
-            ["left_hip_pitch_joint", "right_hip_pitch_joint"],
-            ["left_knee_joint", "right_knee_joint"],
-            ["left_ankle_pitch_joint", "right_ankle_pitch_joint"],
-            ["left_ankle_roll_joint", "right_ankle_roll_joint"],
-        ]
+        # self.rewards.joint_mirror.weight = -0.05
+        # self.rewards.joint_mirror.params["mirror_joints"] = [
+        #     ["FR_(hip|thigh|calf).*", "RL_(hip|thigh|calf).*"],
+        #     ["FL_(hip|thigh|calf).*", "RR_(hip|thigh|calf).*"],
+        # ]
 
         # Action penalties
         self.rewards.action_rate_l2.weight = -0.01
 
         # Contact sensor
         self.rewards.undesired_contacts.weight = -1.0
-        self.rewards.undesired_contacts.params["sensor_cfg"].body_names = [f"^(?!({'|'.join(self.wheel_link_name)})).*"]
+        self.rewards.undesired_contacts.params["sensor_cfg"].body_names = [f"^(?!.*{self.foot_link_name}).*"]
         self.rewards.contact_forces.weight = -1.5e-4
-        self.rewards.contact_forces.params["sensor_cfg"].body_names = self.wheel_link_name
+        self.rewards.contact_forces.params["sensor_cfg"].body_names = [self.foot_link_name]
 
         # Velocity-tracking rewards
         self.rewards.track_lin_vel_xy_exp.weight = 3.0
@@ -246,41 +205,39 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         # Others
         self.rewards.feet_air_time.weight = 0
         self.rewards.feet_air_time.params["threshold"] = 0.5
-        self.rewards.feet_air_time.params["sensor_cfg"].body_names = self.wheel_link_name
+        self.rewards.feet_air_time.params["sensor_cfg"].body_names = [self.foot_link_name]
         self.rewards.feet_contact.weight = 0
-        self.rewards.feet_contact.params["sensor_cfg"].body_names = self.wheel_link_name
+        self.rewards.feet_contact.params["sensor_cfg"].body_names = [self.foot_link_name]
         self.rewards.feet_contact_without_cmd.weight = 0.1
-        self.rewards.feet_contact_without_cmd.params["sensor_cfg"].body_names = self.wheel_link_name
-        self.rewards.feet_stumble.weight = -0.1
-        self.rewards.feet_stumble.params["sensor_cfg"].body_names = self.wheel_link_name
-        self.rewards.feet_slide.weight = -0.1
-        self.rewards.feet_slide.params["sensor_cfg"].body_names = self.wheel_link_name
-        self.rewards.feet_slide.params["asset_cfg"].body_names = self.wheel_link_name
+        self.rewards.feet_contact_without_cmd.params["sensor_cfg"].body_names = [self.foot_link_name]
+        self.rewards.feet_stumble.weight = 0
+        self.rewards.feet_stumble.params["sensor_cfg"].body_names = [self.foot_link_name]
+        self.rewards.feet_slide.weight = 0
+        self.rewards.feet_slide.params["sensor_cfg"].body_names = [self.foot_link_name]
+        self.rewards.feet_slide.params["asset_cfg"].body_names = [self.foot_link_name]
         self.rewards.feet_height.weight = 0
         self.rewards.feet_height.params["target_height"] = 0.1
-        self.rewards.feet_height.params["asset_cfg"].body_names = self.wheel_link_name
+        self.rewards.feet_height.params["asset_cfg"].body_names = [self.foot_link_name]
         self.rewards.feet_height_body.weight = 0
         self.rewards.feet_height_body.params["target_height"] = -0.2
-        self.rewards.feet_height_body.params["asset_cfg"].body_names = self.wheel_link_name
+        self.rewards.feet_height_body.params["asset_cfg"].body_names = [self.foot_link_name]
         self.rewards.feet_gait.weight = 0
-        self.rewards.feet_gait.params["synced_feet_pair_names"] = (("left_wheel", "right_wheel"), ("left_foot_wheel_L", "right_foot_wheel_R"), ("left_foot_wheel_R", "right_foot_wheel_L"))
+        self.rewards.feet_gait.params["synced_feet_pair_names"] = (("FL_foot", "RR_foot"), ("FR_foot", "RL_foot"))
         self.rewards.upward.weight = 1.0
-        self.rewards.feet_distance_y_exp.weight = -1.0
-        self.rewards.feet_distance_y_exp.params["stance_width"] = 0.6
-        self.rewards.feet_distance_y_exp.params["asset_cfg"].body_names = self.wheel_link_name
 
         # If the weight of rewards is 0, set rewards to None
         if self.__class__.__name__ == "WheelLegHumanoidDrivingRoughEnvCfg":
             self.disable_zero_weight_rewards()
 
         # ------------------------------Terminations------------------------------
-        self.terminations.illegal_contact.params["sensor_cfg"].body_names = "torso_link"
+        # self.terminations.illegal_contact.params["sensor_cfg"].body_names = [self.base_link_name, ".*_hip"]
+        self.terminations.illegal_contact = None
 
         # ------------------------------Curriculums------------------------------
         # self.curriculum.command_levels.params["range_multiplier"] = (0.2, 1.0)
         self.curriculum.command_levels = None
 
         # ------------------------------Commands------------------------------
-        self.commands.base_velocity.ranges.lin_vel_x = (-1.0, 1.0)
-        self.commands.base_velocity.ranges.lin_vel_y = (-1.0, 1.0)
-        self.commands.base_velocity.ranges.ang_vel_z = (-1.0, 1.0)
+        # self.commands.base_velocity.ranges.lin_vel_x = (-1.5, 1.5)
+        # self.commands.base_velocity.ranges.lin_vel_y = (-1.0, 1.0)
+        # self.commands.base_velocity.ranges.ang_vel_z = (-1.0, 1.0)
