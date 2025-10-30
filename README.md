@@ -40,6 +40,7 @@ This repository provides an Isaac Lab environment for training a wheel-leg human
     ./isaaclab.sh --install
     ```
     ```
+    git clone https://github.com/chohh7391/wheel_leg_humanoid_lab.git
     cd ~/wheel_leg_humanoid_lab
     python -m pip install -e source/wheel_leg_humanoid_lab
     ```
