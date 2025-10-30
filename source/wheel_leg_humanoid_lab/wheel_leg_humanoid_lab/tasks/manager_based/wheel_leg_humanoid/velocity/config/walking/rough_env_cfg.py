@@ -4,7 +4,6 @@
 from isaaclab.utils import configclass
 
 import wheel_leg_humanoid_lab.tasks.manager_based.wheel_leg_humanoid.velocity.mdp as mdp
-from wheel_leg_humanoid_lab.assets import WHEEL_LEG_HUMANOID_CFG
 
 from wheel_leg_humanoid_lab.tasks.manager_based.wheel_leg_humanoid.velocity.velocity_env_cfg import (
     ActionsCfg,
@@ -12,6 +11,7 @@ from wheel_leg_humanoid_lab.tasks.manager_based.wheel_leg_humanoid.velocity.velo
     RewardsCfg,
 )
 
+from wheel_leg_humanoid_lab.assets.wheel_leg_humanoid import WHEEL_LEG_HUMANOID_CFG
 ##
 # Pre-defined configs
 ##
