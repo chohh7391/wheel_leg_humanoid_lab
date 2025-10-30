@@ -36,6 +36,7 @@ This repository provides an Isaac Lab environment for training a wheel-leg human
     cd ~/
     git clone git@github.com:isaac-sim/IsaacLab.git
     sudo apt install cmake build-essential
+    cd IsaacLab
     ./isaaclab.sh --install
     ```
     ```
