@@ -43,11 +43,11 @@ AK70_10 = {
     "rated_speed": rpm2rad_per_s(310)
 }
 
-WHEEL_RADIUS = 0.11
-L = 0.54
+# WHEEL_RADIUS = 0.11
+# L = 0.54
 
-MAX_LINVEL = WHEEL_RADIUS * AK80_64["rated_speed"]
-MAX_ANGVEL = MAX_LINVEL / L
+# MAX_LINVEL = WHEEL_RADIUS * AK80_64["rated_speed"]
+# MAX_ANGVEL = MAX_LINVEL / L
 
 # Robot Configurations
 WHEEL_LEG_HUMANOID_CFG = ArticulationCfg(

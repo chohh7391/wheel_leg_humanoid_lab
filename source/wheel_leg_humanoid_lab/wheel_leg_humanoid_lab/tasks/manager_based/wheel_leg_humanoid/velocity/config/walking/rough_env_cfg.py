@@ -11,7 +11,7 @@ from wheel_leg_humanoid_lab.tasks.manager_based.wheel_leg_humanoid.velocity.velo
     RewardsCfg,
 )
 
-from wheel_leg_humanoid_lab.assets.wheel_leg_humanoid import WHEEL_LEG_HUMANOID_CFG
+from wheel_leg_humanoid_lab.assets.robot.wheel_leg_humanoid import WHEEL_LEG_HUMANOID_CFG
 ##
 # Pre-defined configs
 ##

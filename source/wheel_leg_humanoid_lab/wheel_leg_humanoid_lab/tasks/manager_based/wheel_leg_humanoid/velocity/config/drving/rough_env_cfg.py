@@ -1,6 +1,5 @@
 import numpy as np
 
-import isaaclab.terrains as terrain_gen
 from isaaclab.managers import RewardTermCfg as RewTerm
 from isaaclab.managers import SceneEntityCfg
 from isaaclab.utils import configclass
@@ -15,7 +14,8 @@ from wheel_leg_humanoid_lab.tasks.manager_based.wheel_leg_humanoid.velocity.velo
 ##
 # Pre-defined configs
 ##
-from wheel_leg_humanoid_lab.assets.wheel_leg_humanoid import WHEEL_LEG_HUMANOID_CFG, MAX_LINVEL, MAX_ANGVEL
+from wheel_leg_humanoid_lab.assets.terrains import DRIVABLE_TERRAINS_CFG
+from wheel_leg_humanoid_lab.assets.robot import WHEEL_LEG_HUMANOID_CFG
 
 
 @configclass
@@ -75,6 +75,7 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         super().__post_init__()
 
         # ------------------------------Sence------------------------------
+        self.scene.terrain.terrain_generator = DRIVABLE_TERRAINS_CFG
         self.scene.robot = WHEEL_LEG_HUMANOID_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
         self.scene.robot.init_state.pos = (0.0, 0.0, 0.6)
         self.scene.robot.init_state.joint_pos.update({
@@ -141,7 +142,7 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
 
         # ------------------------------Rewards------------------------------
         # General
-        self.rewards.is_terminated.weight = 0
+        self.rewards.is_terminated.weight = -200.0
 
         # Root penalties
         self.rewards.lin_vel_z_l2.weight = -2.0
@@ -227,14 +228,13 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
             self.disable_zero_weight_rewards()
 
         # ------------------------------Terminations------------------------------
-        # self.terminations.illegal_contact.params["sensor_cfg"].body_names = [self.base_link_name, ".*_hip"]
-        self.terminations.illegal_contact = None
+        self.terminations.illegal_contact.params["sensor_cfg"].body_names = [self.base_link_name]
 
         # ------------------------------Curriculums------------------------------
         # self.curriculum.command_levels.params["range_multiplier"] = (0.2, 1.0)
         self.curriculum.command_levels = None
 
         # ------------------------------Commands------------------------------
-        self.commands.base_velocity.ranges.lin_vel_x = (-MAX_LINVEL, MAX_LINVEL)
+        self.commands.base_velocity.ranges.lin_vel_x = (-0.55, 0.55)
         self.commands.base_velocity.ranges.lin_vel_y = (0.0, 0.0)
-        self.commands.base_velocity.ranges.ang_vel_z = (-MAX_ANGVEL, MAX_ANGVEL)
+        self.commands.base_velocity.ranges.ang_vel_z = (-1.0, 1.0)
