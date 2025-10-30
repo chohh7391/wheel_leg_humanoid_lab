@@ -1,5 +1,4 @@
-# Copyright (c) 2024-2025 Ziqi Fan
-# SPDX-License-Identifier: Apache-2.0
+import numpy as np
 
 import isaaclab.terrains as terrain_gen
 from isaaclab.managers import RewardTermCfg as RewTerm
@@ -16,9 +15,7 @@ from wheel_leg_humanoid_lab.tasks.manager_based.wheel_leg_humanoid.velocity.velo
 ##
 # Pre-defined configs
 ##
-# from wheel_leg_humanoid_lab.assets import WHEEL_LEG_HUMANOID_DRIVING_MODE_CFG  # isort: skip
 from wheel_leg_humanoid_lab.assets.wheel_leg_humanoid import WHEEL_LEG_HUMANOID_CFG, MAX_LINVEL, MAX_ANGVEL
-import numpy as np
 
 
 @configclass
