@@ -13,38 +13,34 @@ This repository provides an Isaac Lab environment for training a wheel-leg human
 
 ## Installation
 
-- Install Isaac Lab by following the [installation guide](https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html).
-  We recommend using the conda installation as it simplifies calling Python scripts from the terminal.
+```bash
+# 1) Conda env
+conda create -n wheel_leg_humanoid_lab python=3.11
+conda activate wheel_leg_humanoid_lab
 
-- Clone or copy this project/repository separately from the Isaac Lab installation (i.e. outside the `IsaacLab` directory):
+# 2) Clone the repo
+cd $HOME
+git clone https://github.com/chohh7391/wheel_leg_humanoid_lab.git
+cd wheel_leg_humanoid_lab
 
-- Using a python interpreter that has Isaac Lab installed, install the library in editable mode using:
+# 3) Pytorch (CUDA 12.8)
+pip install --upgrade pip
+pip install -U torch==2.7.0 torchvision==0.22.0 --index-url https://download.pytorch.org/whl/cu128
 
-- create conda env
-    ```
-    conda create -n wheel_leg_humanoid_lab python=3.11
-    conda activate wheel_leg_humanoid_lab
-    ```
+# 4) Isaac Sim SDK (v5.1.0)
+pip install "isaacsim[all,extscache]==5.1.0" --extra-index-url https://pypi.nvidia.com
 
-- install dependencies
-    ```
-    pip install --upgrade pip
-    pip install "isaacsim[all,extscache]==5.1.0" --extra-index-url https://pypi.nvidia.com
-    pip install -U torch==2.7.0 torchvision==0.22.0 --index-url https://download.pytorch.org/whl/cu128
-    ```
-    ```
-    cd ~/
-    git clone git@github.com:isaac-sim/IsaacLab.git
-    sudo apt install cmake build-essential
-    cd IsaacLab
-    ./isaaclab.sh --install
-    ```
-    ```
-    cd ~/
-    git clone https://github.com/chohh7391/wheel_leg_humanoid_lab.git
-    cd ~/wheel_leg_humanoid_lab
-    python -m pip install -e source/wheel_leg_humanoid_lab
-    ```
+# 5) Isaac Lab (v2.3.0)
+git clone -b v2.3.0 git@github.com:isaac-sim/IsaacLab.git _isaaclab
+sudo apt install -y cmake build-essential
+./_isaaclab/isaaclab.sh --install
+
+# 6) Smoke test (headless sim)
+python _isaaclab/scripts/tutorials/00_sim/create_empty.py --headless
+
+# 7) Dev install
+python -m pip install -e source/wheel_leg_humanoid_lab
+```
 
 - Verify that the extension is correctly installed by:
 
