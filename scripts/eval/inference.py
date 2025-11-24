@@ -61,12 +61,8 @@ def main():
     robot = env.scene["robot"]
     joint_ids, joint_names = robot.find_joints(".*")
 
-    # [수정] 모든 관절 이름을 출력하는 대신, 플롯할 관절만 확인
     plot_indices = [joint_names.index(name) for name in PLOT_JOINT_NAMES if name in joint_names]
     
-    # ----------------------------------------------------------------------
-    # 📈 플롯 레이아웃 및 가시성 개선
-    # ----------------------------------------------------------------------
     num_plots = len(plot_indices)
     
     # 서브플롯 구조: 4열로 나누어 가로로 확장
@@ -165,13 +161,7 @@ def main():
                 fig.canvas.flush_events()
                 
             step_count += 1
-            
-    # ----------------------------------------------------------------------
-    # 루프 종료 후 남은 빈 플롯 숨기기 (선택 사항)
-    # for i in range(num_plots, nrows * ncols):
-    #     ax[i].set_visible(False)
-    # ----------------------------------------------------------------------
-
+        
 
 if __name__ == "__main__":
     try:
