@@ -1,5 +1,5 @@
 import isaaclab.sim as sim_utils
-from isaaclab.actuators import DCMotorCfg, ImplicitActuatorCfg
+from isaaclab.actuators import ImplicitActuatorCfg
 from isaaclab.assets.articulation import ArticulationCfg
 
 from wheel_leg_humanoid_lab.assets import ISAACLAB_ASSETS_DATA_DIR
@@ -25,23 +25,39 @@ Rated torque (Nm): 8.3
 Rated speed: 148/310 rpm
 """
 
-def rpm2rad_per_s(rpm):
 
+def rpm2rad_per_s(rpm):
     rad_per_s = rpm * 2 * np.pi / 60
-    
     return rad_per_s
 
-# AK80-64
+
+def cal_motor_armature(inertia, reduction):
+    """
+    <input dim>
+    inertia: g cm^2
+    reduction: ?:1
+    """
+    # convert unit: g cm^2 -> kg m^2
+    inertia = inertia * 1e-3 * (1e-2)**2
+    armature = inertia * reduction**2
+    return armature
+
+
 AK80_64 = {
     "peak_torque": 120,
     "rated_torque": 48,
-    "rated_speed": rpm2rad_per_s(48)
+    "rated_speed": rpm2rad_per_s(48),
+    "inertia": 564.5,  # g cm^2
+    "reduction": 64,  # 64:1
 }
-AK70_10 = {
-    "peak_torque": 24.8,
-    "rated_torque": 8.3,
-    "rated_speed": rpm2rad_per_s(310)
-}
+
+NATURAL_FREQ = 10 * 2.0 * 3.1415926535  # 10Hz
+DAMPING_RATIO = 2.0
+
+ARMATURE_AK80_64 = cal_motor_armature(AK80_64["inertia"], AK80_64["reduction"])
+STIFFNESS_AK80_64 = ARMATURE_AK80_64 * NATURAL_FREQ**2
+DAMPING_AK80_64 = 2.0 * DAMPING_RATIO * ARMATURE_AK80_64 * NATURAL_FREQ
+
 
 # WHEEL_RADIUS = 0.11
 # L = 0.54
@@ -49,23 +65,6 @@ AK70_10 = {
 # MAX_LINVEL = WHEEL_RADIUS * AK80_64["rated_speed"]
 # MAX_ANGVEL = MAX_LINVEL / L
 
-ARMATURE_5020 = 0.003609725
-ARMATURE_7520_14 = 0.010177520
-ARMATURE_7520_22 = 0.025101925
-ARMATURE_4010 = 0.00425
-
-NATURAL_FREQ = 10 * 2.0 * 3.1415926535  # 10Hz
-DAMPING_RATIO = 2.0
-
-STIFFNESS_5020 = ARMATURE_5020 * NATURAL_FREQ**2
-STIFFNESS_7520_14 = ARMATURE_7520_14 * NATURAL_FREQ**2
-STIFFNESS_7520_22 = ARMATURE_7520_22 * NATURAL_FREQ**2
-STIFFNESS_4010 = ARMATURE_4010 * NATURAL_FREQ**2
-
-DAMPING_5020 = 2.0 * DAMPING_RATIO * ARMATURE_5020 * NATURAL_FREQ
-DAMPING_7520_14 = 2.0 * DAMPING_RATIO * ARMATURE_7520_14 * NATURAL_FREQ
-DAMPING_7520_22 = 2.0 * DAMPING_RATIO * ARMATURE_7520_22 * NATURAL_FREQ
-DAMPING_4010 = 2.0 * DAMPING_RATIO * ARMATURE_4010 * NATURAL_FREQ
 
 # Robot Configurations
 WHEEL_LEG_HUMANOID_CFG = ArticulationCfg(
@@ -134,70 +133,41 @@ WHEEL_LEG_HUMANOID_CFG = ArticulationCfg(
             joint_names_expr=["waist"],
             effort_limit_sim=AK80_64["peak_torque"],
             velocity_limit_sim=AK80_64["rated_speed"],
-            stiffness={
-                "waist": STIFFNESS_7520_14,
-            },
-            damping={
-                "waist": DAMPING_7520_14,
-            },
-            armature={
-                "waist": ARMATURE_7520_14,
-            },
+            stiffness=STIFFNESS_AK80_64,
+            damping=DAMPING_AK80_64,
+            armature=ARMATURE_AK80_64,
         ),
         "legs": ImplicitActuatorCfg(
             joint_names_expr=[".*_pelvis_1", ".*_pelvis_2", ".*_thigh", ".*_calf"],
             effort_limit_sim=AK80_64["peak_torque"],
             velocity_limit_sim=AK80_64["rated_speed"],
-            stiffness={
-                ".*_pelvis_1": STIFFNESS_7520_14,
-                ".*_pelvis_2": STIFFNESS_7520_22,
-                ".*_thigh": STIFFNESS_7520_14,
-                ".*_calf": STIFFNESS_7520_22,
-            },
-            damping={
-                ".*_pelvis_1": DAMPING_7520_14,
-                ".*_pelvis_2": DAMPING_7520_22,
-                ".*_thigh": DAMPING_7520_14,
-                ".*_calf": DAMPING_7520_22,
-            },
-            armature={
-                ".*_pelvis_1": ARMATURE_7520_14,
-                ".*_pelvis_2": ARMATURE_7520_22,
-                ".*_thigh": ARMATURE_7520_14,
-                ".*_calf": ARMATURE_7520_22,
-            },
+            stiffness=STIFFNESS_AK80_64,
+            damping=DAMPING_AK80_64,
+            armature=ARMATURE_AK80_64,
         ),
         "feet": ImplicitActuatorCfg(
             joint_names_expr=[".*_ankle_1", ".*_ankle_2"],
-            effort_limit_sim=AK70_10["peak_torque"],
-            velocity_limit_sim=AK70_10["rated_speed"],
-            stiffness=2.0 * STIFFNESS_5020,
-            damping=2.0 * DAMPING_5020,
-            armature=2.0 * ARMATURE_5020,
+            effort_limit_sim=AK80_64["peak_torque"],
+            velocity_limit_sim=AK80_64["rated_speed"],
+            stiffness=2.0 * STIFFNESS_AK80_64,
+            damping=2.0 * DAMPING_AK80_64,
+            armature=2.0 * ARMATURE_AK80_64,
         ),
         "wheel": ImplicitActuatorCfg(
             joint_names_expr=[".*_wheel"],
             effort_limit_sim=AK80_64["peak_torque"],
             velocity_limit_sim=AK80_64["rated_speed"],
-            stiffness={
-                ".*_wheel": 0.0,
-            },
-            damping={
-                ".*_wheel": 0.5,
-            },
-            armature={
-                ".*_wheel": 0.01,
-            },
-            friction=0.0,
+            stiffness=0.0,
+            damping=0.5,
+            armature=ARMATURE_AK80_64,
         ),
         "foot_wheel": ImplicitActuatorCfg(
             joint_names_expr=[".*_foot_wheel_.*"],
-            effort_limit_sim=0.0, # no actuation
-            velocity_limit_sim=1000.0, # no limit
+            effort_limit_sim=0.0,  # no actuation
+            velocity_limit_sim=1000.0,  # no limit
             stiffness=0.0,
             damping=0.1,
             armature=0.0,
-            friction=0.0,
         ),
     }
 )
