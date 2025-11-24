@@ -90,55 +90,23 @@ WHEEL_LEG_HUMANOID_CFG = ArticulationCfg(
         ),
     ),
     init_state=ArticulationCfg.InitialStateCfg(
-        pos=(0.0, 0.0, 0.88),
+        pos=(0.0, 0.0, 0.78),
         joint_pos={
-            # waist
-            "waist": 0.0,
-
-            # pelvis
-            "right_pelvis_1": 0.0,
-            "right_pelvis_2": 0.0,
-            "left_pelvis_1": 0.0,
-            "left_pelvis_2": 0.0,
-
-            # thigh
-            "right_thigh": 0.0,
-            "left_thigh": 0.0,
-
-            # calf
-            "right_calf": 0.0,
-            "left_calf": 0.0,
-
-            # ankle
-            "right_ankle_1": 0.0,
-            "right_ankle_2": 0.0,
-            "left_ankle_1": 0.0,
-            "left_ankle_2": 0.0,
-
-            # wheel
-            "right_wheel": 0.0,
-            "left_wheel": 0.0,
-
-            # foot wheel (passive)
-            "right_foot_wheel_R": 0.0,
-            "right_foot_wheel_L": 0.0,
-            "left_foot_wheel_R": 0.0,
-            "left_foot_wheel_L": 0.0,
+            ".*_hip_pitch_joint": -0.312,
+            ".*_knee_joint": 0.669,
+            ".*_ankle_pitch_joint": -0.363,
         },
         joint_vel={".*": 0.0},
     ),
     soft_joint_pos_limit_factor=0.9,
     actuators={
-        "waist": ImplicitActuatorCfg(
-            joint_names_expr=["waist"],
-            effort_limit_sim=AK80_64["peak_torque"],
-            velocity_limit_sim=AK80_64["rated_speed"],
-            stiffness=STIFFNESS_AK80_64,
-            damping=DAMPING_AK80_64,
-            armature=ARMATURE_AK80_64,
-        ),
         "legs": ImplicitActuatorCfg(
-            joint_names_expr=[".*_pelvis_1", ".*_pelvis_2", ".*_thigh", ".*_calf"],
+            joint_names_expr=[
+                ".*_hip_yaw_joint",
+                ".*_hip_roll_joint",
+                ".*_hip_pitch_joint",
+                ".*_knee_joint",
+            ],
             effort_limit_sim=AK80_64["peak_torque"],
             velocity_limit_sim=AK80_64["rated_speed"],
             stiffness=STIFFNESS_AK80_64,
@@ -146,15 +114,23 @@ WHEEL_LEG_HUMANOID_CFG = ArticulationCfg(
             armature=ARMATURE_AK80_64,
         ),
         "feet": ImplicitActuatorCfg(
-            joint_names_expr=[".*_ankle_1", ".*_ankle_2"],
+            joint_names_expr=[".*_ankle_pitch_joint", ".*_ankle_roll_joint"],
             effort_limit_sim=AK80_64["peak_torque"],
             velocity_limit_sim=AK80_64["rated_speed"],
             stiffness=2.0 * STIFFNESS_AK80_64,
             damping=2.0 * DAMPING_AK80_64,
             armature=2.0 * ARMATURE_AK80_64,
         ),
+        "waist_yaw": ImplicitActuatorCfg(
+            joint_names_expr=["waist_yaw_joint"],
+            effort_limit_sim=AK80_64["peak_torque"],
+            velocity_limit_sim=AK80_64["rated_speed"],
+            stiffness=STIFFNESS_AK80_64,
+            damping=DAMPING_AK80_64,
+            armature=ARMATURE_AK80_64,
+        ),
         "wheel": ImplicitActuatorCfg(
-            joint_names_expr=[".*_wheel"],
+            joint_names_expr=[".*_wheel_joint"],
             effort_limit_sim=AK80_64["peak_torque"],
             velocity_limit_sim=AK80_64["rated_speed"],
             stiffness=0.0,
@@ -162,11 +138,11 @@ WHEEL_LEG_HUMANOID_CFG = ArticulationCfg(
             armature=ARMATURE_AK80_64,
         ),
         "foot_wheel": ImplicitActuatorCfg(
-            joint_names_expr=[".*_foot_wheel_.*"],
+            joint_names_expr=[".*_foot_wheel_joint_.*"],
             effort_limit_sim=0.0,  # no actuation
             velocity_limit_sim=1000.0,  # no limit
             stiffness=0.0,
-            damping=0.1,
+            damping=0.5,
             armature=0.0,
         ),
     }

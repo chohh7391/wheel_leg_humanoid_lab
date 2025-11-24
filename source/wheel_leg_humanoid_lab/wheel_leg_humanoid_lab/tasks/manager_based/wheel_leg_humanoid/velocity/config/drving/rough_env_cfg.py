@@ -53,20 +53,20 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
     actions: WheelLegHumanoidDrivingActionsCfg = WheelLegHumanoidDrivingActionsCfg()
     rewards: WheelLegHumanoidDrivingRewardsCfg = WheelLegHumanoidDrivingRewardsCfg()
 
-    base_link_name = "base_link"
-    foot_link_name = ".*_wheel.*"
+    base_link_name = "torso_link"
+    foot_link_name = ".*_wheel_link_.*"
 
     # fmt: off
     waist_joint_names = [
-        "waist"
+        "waist_yaw_joint"
     ]
     leg_joint_names = [
-        "right_pelvis_1", "right_pelvis_2", "right_thigh", "right_calf", "right_ankle_1", "right_ankle_2",
-        "left_pelvis_1", "left_pelvis_2", "left_thigh", "left_calf", "left_ankle_1", "left_ankle_2",
+        "left_hip_pitch_joint", "left_hip_roll_joint", "left_hip_yaw_joint", "left_knee_joint", "left_ankle_pitch_joint", "left_ankle_roll_joint",
+        "right_hip_pitch_joint", "right_hip_roll_joint", "right_hip_yaw_joint", "right_knee_joint", "right_ankle_pitch_joint", "right_ankle_roll_joint",
     ]
     wheel_joint_names = [
-        "right_wheel",
-        "left_wheel"
+        "left_wheel_joint",
+        "right_wheel_joint",
     ]
     joint_names = waist_joint_names + leg_joint_names + wheel_joint_names
     # fmt: on
@@ -78,12 +78,10 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         # ------------------------------Sence------------------------------
         self.scene.terrain.terrain_generator = DRIVABLE_TERRAINS_CFG
         self.scene.robot = WHEEL_LEG_HUMANOID_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
-        self.scene.robot.init_state.pos = (0.0, 0.0, 0.6)
+        self.scene.robot.init_state.pos = (0.0, 0.0, 0.44)
         self.scene.robot.init_state.joint_pos.update({
-            "right_pelvis_1": float(np.deg2rad(-20.0)),
-            "left_pelvis_1": float(np.deg2rad(-20.0)),
-            "right_calf": float(np.deg2rad(119.99)),
-            "left_calf": float(np.deg2rad(119.99)),
+            ".*_hip_pitch_joint": float(np.deg2rad(-20.0)),
+            ".*_knee_joint": float(np.deg2rad(119.99)),
         })
         self.scene.height_scanner.prim_path = "{ENV_REGEX_NS}/Robot/" + self.base_link_name
         self.scene.height_scanner_base.prim_path = "{ENV_REGEX_NS}/Robot/" + self.base_link_name
@@ -108,7 +106,7 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
 
         # ------------------------------Actions------------------------------
         # reduce action scale
-        self.actions.joint_pos.scale = {".*_pelvis_2": 0.125, "^(?!.*_pelvis_2).*": 0.25}
+        self.actions.joint_pos.scale = {".*_hip_roll_joint": 0.125, "^(?!.*_hip_roll_joint).*": 0.25}
         self.actions.joint_vel.scale = 5.0
         self.actions.joint_pos.clip = {".*": (-100.0, 100.0)}
         self.actions.joint_vel.clip = {".*": (-100.0, 100.0)}

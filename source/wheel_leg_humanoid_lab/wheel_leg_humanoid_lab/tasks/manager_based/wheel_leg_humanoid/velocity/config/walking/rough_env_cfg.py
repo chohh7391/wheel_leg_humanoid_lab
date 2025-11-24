@@ -17,42 +17,31 @@ from wheel_leg_humanoid_lab.assets.robot.wheel_leg_humanoid import WHEEL_LEG_HUM
 
 @configclass
 class WheelLegHumanoidWalkingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
-    base_link_name = "base_link"
-    foot_link_name = ".*_ankle_2"
+    base_link_name = "torso_link"
+    foot_link_name = ".*_ankle_roll_link"
     # fmt: off
     joint_names = [
-        # waist
-        "waist",
+        "left_hip_pitch_joint",          # 0  L_LEG_HIP_PITCH
+        "left_hip_roll_joint",           # 1  L_LEG_HIP_ROLL
+        "left_hip_yaw_joint",            # 2  L_LEG_HIP_YAW
+        "left_wheel_joint",              # 3  L_WHEEL
+        "left_knee_joint",               # 4  L_LEG_KNEE
+        "left_ankle_pitch_joint",        # 5  L_LEG_ANKLE_B
+        "left_ankle_roll_joint",         # 6  L_LEG_ANKLE_A
+        "right_hip_pitch_joint",         # 7  R_LEG_HIP_PITCH
+        "right_hip_roll_joint",          # 8  R_LEG_HIP_ROLL
+        "right_hip_yaw_joint",           # 9  R_LEG_HIP_YAW
+        "right_wheel_joint",             # 10 R_WHEEL
+        "right_knee_joint",              # 11 R_LEG_KNEE
+        "right_ankle_pitch_joint",       # 12 R_LEG_ANKLE_B
+        "right_ankle_roll_joint",        # 13 R_LEG_ANKLE_A
+        "waist_yaw_joint",               # 14 WAIST_YAW
 
-        # pelvis
-        "right_pelvis_1",
-        "right_pelvis_2",
-        "left_pelvis_1",
-        "left_pelvis_2",
-
-        # thigh
-        "right_thigh",
-        "left_thigh",
-
-        # calf
-        "right_calf",
-        "left_calf",
-
-        # ankle
-        "right_ankle_1",
-        "right_ankle_2",
-        "left_ankle_1",
-        "left_ankle_2",
-
-        # # wheel
-        # "right_wheel",
-        # "left_wheel",
-
-        # foot wheel (passive)
-        # "right_foot_wheel_R",
-        # "right_foot_wheel_L",
-        # "left_foot_wheel_R",
-        # "left_foot_wheel_L",
+        # # Passive joint
+        # "left_foot_wheel_joint_R",
+        # "left_foot_wheel_joint_L",
+        # "right_foot_wheel_joint_R",
+        # "right_foot_wheel_joint_L",
     ]
     # fmt: on
 
@@ -106,25 +95,25 @@ class WheelLegHumanoidWalkingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
 
         # Joint penalties
         self.rewards.joint_torques_l2.weight = -1.5e-7
-        self.rewards.joint_torques_l2.params["asset_cfg"].joint_names = [".*_pelvis_.*", ".*_thigh", ".*_calf", ".*_ankle_.*"]
+        self.rewards.joint_torques_l2.params["asset_cfg"].joint_names = [".*_hip_.*", ".*_knee_joint", ".*_ankle_.*"]
         self.rewards.joint_vel_l2.weight = 0
         self.rewards.joint_acc_l2.weight = -1.25e-7
-        self.rewards.joint_acc_l2.params["asset_cfg"].joint_names = [".*_pelvis_.*", ".*_thigh", ".*_calf"]
-        self.rewards.create_joint_deviation_l1_rewterm("joint_deviation_hip_l1", -0.1, [".*_thigh", ".*_pelvis_2"])
+        self.rewards.joint_acc_l2.params["asset_cfg"].joint_names = [".*_hip_.*", ".*_knee_joint"]
+        self.rewards.create_joint_deviation_l1_rewterm("joint_deviation_hip_l1", -0.1, [".*hip_yaw.*", ".*hip_roll.*"])
         # self.rewards.create_joint_deviation_l1_rewterm("joint_deviation_arms_l1", -0.1, [".*shoulder.*", ".*elbow.*"])
-        self.rewards.create_joint_deviation_l1_rewterm("joint_deviation_waist_l1", -0.1, ["waist"])
+        self.rewards.create_joint_deviation_l1_rewterm("joint_deviation_torso_l1", -0.1, ["waist_yaw_joint"])
         self.rewards.joint_pos_limits.weight = -0.5
         self.rewards.joint_vel_limits.weight = 0
         self.rewards.joint_power.weight = 0
         self.rewards.stand_still.weight = 0
         self.rewards.joint_pos_penalty.weight = -1.0
         self.rewards.joint_mirror.weight = 0
-        self.rewards.joint_mirror.params["mirror_joints"] = [["left_(pelvis|thigh|calf|ankle).*", "right_(pelvis|thigh|calf|ankle).*"]]
-
+        self.rewards.joint_mirror.params["mirror_joints"] = [["left_(hip|knee|ankle).*", "right_(hip|knee|ankle).*"]]
+        
         # Action penalties
         self.rewards.action_rate_l2.weight = -0.005
         self.rewards.action_mirror.weight = 0
-        self.rewards.action_mirror.params["mirror_joints"] = [["left_(pelvis|thigh|calf|ankle).*", "right_(pelvis|thigh|calf|ankle).*"]]
+        self.rewards.action_mirror.params["mirror_joints"] = [["left_(hip|knee|ankle).*", "right_(hip|knee|ankle).*"]]
 
         # Contact sensor
         self.rewards.undesired_contacts.weight = 0

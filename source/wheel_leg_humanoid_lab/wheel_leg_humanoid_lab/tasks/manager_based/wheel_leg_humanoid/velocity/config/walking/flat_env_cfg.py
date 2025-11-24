@@ -30,7 +30,7 @@ class WheelLegHumanoidWalkingFlatEnvCfg(WheelLegHumanoidWalkingRoughEnvCfg):
         self.rewards.action_rate_l2.weight = -0.005
         self.rewards.joint_acc_l2.weight = -1.0e-7
         self.rewards.joint_torques_l2.weight = -2.0e-6
-        self.rewards.joint_torques_l2.params["asset_cfg"].joint_names = [".*_pelvis_.*", ".*_thigh", ".*_calf"]
+        self.rewards.joint_torques_l2.params["asset_cfg"].joint_names = [".*_hip_.*", ".*_knee_joint"]
 
         # If the weight of rewards is 0, set rewards to None
         if self.__class__.__name__ == "WheelLegHumanoidWalkingFlatEnvCfg":

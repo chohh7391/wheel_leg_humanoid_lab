@@ -27,11 +27,9 @@ import numpy as np
 
 
 PLOT_JOINT_NAMES = [
-    "waist",
-    "right_pelvis_1", "right_pelvis_2", "left_pelvis_1", "left_pelvis_2",
-    "right_thigh", "left_thigh",
-    "right_calf", "left_calf",
-    "right_ankle_1", "right_ankle_2", "left_ankle_1", "left_ankle_2",
+    "waist_yaw_joint",
+    "left_hip_pitch_joint", "left_hip_roll_joint", "left_hip_yaw_joint", "left_knee_joint", "left_ankle_pitch_joint", "left_ankle_roll_joint",
+    "right_hip_pitch_joint", "right_hip_roll_joint", "right_hip_yaw_joint", "right_knee_joint", "right_ankle_pitch_joint", "right_ankle_roll_joint",
 ]
 
 
@@ -79,7 +77,7 @@ def main():
 
     fig.suptitle('Real-time Applied Motor Torque Monitoring (AK80-64)', fontsize=16, weight='bold')
     
-    history_len = 500
+    history_len = 20
     data_history = {name: [] for name in PLOT_JOINT_NAMES}
     lines = {}
     
