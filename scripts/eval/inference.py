@@ -26,7 +26,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-PLOT_JOINT_NAMES = ["waist", "right_pelvis_1", "left_pelvis_1"]
+PLOT_JOINT_NAMES = [
+    "waist",
+    "right_pelvis_1", "right_pelvis_2", "left_pelvis_1", "left_pelvis_2",
+    "right_thigh", "left_thigh",
+    "right_calf", "left_calf",
+    "right_ankle_1", "right_ankle_2", "left_ankle_1", "left_ankle_2",
+]
 
 
 def main():
@@ -44,7 +50,7 @@ def main():
     env_cfg.scene.terrain = TerrainImporterCfg(
         prim_path="/World/ground",
         terrain_type="usd",
-        usd_path=f"{ISAAC_NUCLEUS_DIR}/Environments/Simple_Warehouse/warehouse.usd",
+        usd_path=f"{ISAAC_NUCLEUS_DIR}/Environments/Grid/default_environment.usd",
     )
     env_cfg.sim.device = args_cli.device
     if args_cli.device == "cpu":
@@ -52,70 +58,128 @@ def main():
 
     # create environment
     env = ManagerBasedRLEnv(cfg=env_cfg)
-
     robot = env.scene["robot"]
-
     joint_ids, joint_names = robot.find_joints(".*")
-    for i in range(len(joint_ids)):
-        print(f"joint_id: {joint_ids[i]}, joint_name: {joint_names[i]}")
-        
+
+    # [수정] 모든 관절 이름을 출력하는 대신, 플롯할 관절만 확인
     plot_indices = [joint_names.index(name) for name in PLOT_JOINT_NAMES if name in joint_names]
-
+    
+    # ----------------------------------------------------------------------
+    # 📈 플롯 레이아웃 및 가시성 개선
+    # ----------------------------------------------------------------------
+    num_plots = len(plot_indices)
+    
+    # 서브플롯 구조: 4열로 나누어 가로로 확장
+    ncols = 3 
+    nrows = int(np.ceil(num_plots / ncols))
+    
+    # 창 크기를 더 크고 넓게 설정
     plt.ion()
-    fig, ax = plt.subplots(len(plot_indices), 1, figsize=(10, 8), sharex=True)
-    if len(plot_indices) == 1:
-        ax = [ax]
+    # fig.size: 가로 18인치, 세로 (행 수에 비례)
+    fig, ax_flat = plt.subplots(nrows, ncols, figsize=(18, 3.5 * nrows), sharex=True)
+    
+    # ax_flat을 1차원 리스트로 변환하여 인덱싱을 쉽게 함
+    ax = ax_flat.flatten() if nrows * ncols > 1 else [ax_flat]
 
-    history_len = 500  # 최근 500 스텝의 데이터만 표시
+    fig.suptitle('Real-time Applied Motor Torque Monitoring (AK80-64)', fontsize=16, weight='bold')
+    
+    history_len = 500
     data_history = {name: [] for name in PLOT_JOINT_NAMES}
-
     lines = {}
-    for i, name in enumerate(PLOT_JOINT_NAMES):
-        if name in joint_names:
-            ax[i].set_title(f"Applied Torque: {name}")
-            ax[i].grid(True)
-
-            line, _ = ax[i].plot([], [], label=name)
-            lines[name] = line
+    
+    # 플롯 생성 및 스타일 설정
+    for i in range(num_plots):
+        name = PLOT_JOINT_NAMES[i]
+        
+        # 1. 제목 및 그리드 설정
+        ax[i].set_title(f"{name}", fontsize=12, loc='left', color='dodgerblue')
+        ax[i].grid(True, linestyle='--', alpha=0.6)
+        ax[i].set_ylabel("Torque (Nm)", fontsize=10)
+        
+        # 2. 라인 스타일 설정
+        line, = ax[i].plot([], [], label=name, color='lime', linewidth=1.5)
+        lines[name] = line
+        
+        # 3. 플롯에 사용되지 않는 빈 공간 처리 (선택 사항)
+        if i >= num_plots:
+            ax[i].set_visible(False)
+            
+    # X축 라벨은 가장 아래 행에만 표시
+    for i in range(num_plots - ncols, num_plots):
+        if i < num_plots:
+            ax[i].set_xlabel("Time Steps (Simulation Frames)", fontsize=10)
+    
+    # 플롯 간 간격 조정 (plt.tight_layout을 사용하면 서브플롯들이 겹치지 않게 배치됨)
+    plt.tight_layout(rect=[0, 0, 1, 0.97])
 
     # run inference with the policy
     obs, _ = env.reset()
+    step_count = 0
     with torch.inference_mode():
         while simulation_app.is_running():
             action = policy(obs["policy"])
             obs, _, _, _, _ = env.step(action)
             applied_torque = robot.data.applied_torque.squeeze()
             
-            # 토크 값 로깅 및 플롯 업데이트
             if applied_torque.dim() == 1 and len(applied_torque) == len(joint_names):
                 
-                # 데이터 업데이트
+                # 데이터 수집 및 업데이트
                 for name, idx in zip(PLOT_JOINT_NAMES, plot_indices):
                     torque_val = applied_torque[idx].item()
                     data_history[name].append(torque_val)
                     
-                    # history_len 유지
                     if len(data_history[name]) > history_len:
                         data_history[name] = data_history[name][1:]
 
-                # 플롯 업데이트
-                time_steps = range(len(data_history[PLOT_JOINT_NAMES[0]]))
+                # 플롯 시각화 업데이트
                 for i, name in enumerate(PLOT_JOINT_NAMES):
                     if name in joint_names:
-                        lines[name].set_data(time_steps, data_history[name])
+                        current_data = data_history[name]
                         
-                        # x축 및 y축 자동 조정
+                        # X축 데이터 크기 맞춤
+                        x_data = range(max(0, step_count + 1 - len(current_data)), step_count + 1)
+                        lines[name].set_data(x_data, current_data)
+                        
+                        # X축 (시간 윈도우) 업데이트
                         ax[i].set_xlim(max(0, step_count - history_len), step_count)
-                        y_min = min(data_history[name]) - 5
-                        y_max = max(data_history[name]) + 5
-                        ax[i].set_ylim(y_min, y_max)
                         
+                        # Y축 자동 조정 및 최소 범위 보장
+                        if current_data:
+                            y_min = min(current_data)
+                            y_max = max(current_data)
+                            y_range = y_max - y_min
+                            
+                            # 데이터가 거의 변화 없을 때를 대비해 최소 20Nm 범위 확보
+                            if y_range < 20.0:
+                                center = (y_min + y_max) / 2
+                                y_min = center - 10.0
+                                y_max = center + 10.0
+                            else:
+                                # 데이터가 변화할 경우, 5Nm 마진 추가
+                                y_min -= 5.0
+                                y_max += 5.0
+                                
+                            ax[i].set_ylim(y_min, y_max)
+                            
                 fig.canvas.draw()
                 fig.canvas.flush_events()
                 
             step_count += 1
+            
+    # ----------------------------------------------------------------------
+    # 루프 종료 후 남은 빈 플롯 숨기기 (선택 사항)
+    # for i in range(num_plots, nrows * ncols):
+    #     ax[i].set_visible(False)
+    # ----------------------------------------------------------------------
 
 
 if __name__ == "__main__":
-    main()
-    simulation_app.close()
+    try:
+        main()
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
+        simulation_app.close()
+        plt.ioff()
+        print("\n--- 시뮬레이션 종료. 플롯 창을 닫아주세요. ---")
+        plt.show()
