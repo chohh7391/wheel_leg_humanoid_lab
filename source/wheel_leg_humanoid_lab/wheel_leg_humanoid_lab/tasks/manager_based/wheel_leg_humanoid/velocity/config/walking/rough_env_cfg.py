@@ -11,7 +11,7 @@ from wheel_leg_humanoid_lab.tasks.manager_based.wheel_leg_humanoid.velocity.velo
     RewardsCfg,
 )
 
-from wheel_leg_humanoid_lab.assets.robot.wheel_leg_humanoid import WHEEL_LEG_HUMANOID_CFG
+from wheel_leg_humanoid_lab.assets.robot.wheel_leg_humanoid import WHEEL_LEG_HUMANOID_CFG, WALKING_MODE_ACTION_SCALE
 ##
 # Pre-defined configs
 ##
@@ -55,6 +55,7 @@ class WheelLegHumanoidWalkingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         # "left_foot_wheel_R",
         # "left_foot_wheel_L",
     ]
+    # fmt: on
 
     def __post_init__(self):
         # post init of parent
@@ -77,7 +78,8 @@ class WheelLegHumanoidWalkingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
 
         # ------------------------------Actions------------------------------
         # reduce action scale
-        self.actions.joint_pos.scale = 0.25
+        # self.actions.joint_pos.scale = 0.25
+        self.actions.joint_pos.scale = WALKING_MODE_ACTION_SCALE
         self.actions.joint_pos.clip = {".*": (-100.0, 100.0)}
         self.actions.joint_pos.joint_names = self.joint_names
 
@@ -167,8 +169,10 @@ class WheelLegHumanoidWalkingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         self.terminations.illegal_contact.params["sensor_cfg"].body_names = [self.base_link_name]
 
         # ------------------------------Curriculums------------------------------
-        # self.curriculum.command_levels.params["range_multiplier"] = (0.2, 1.0)
-        self.curriculum.command_levels = None
+        # self.curriculum.command_levels_lin_vel.params["range_multiplier"] = (0.2, 1.0)
+        # self.curriculum.command_levels_ang_vel.params["range_multiplier"] = (0.2, 1.0)
+        self.curriculum.command_levels_lin_vel = None
+        self.curriculum.command_levels_ang_vel = None
 
         # ------------------------------Commands------------------------------
         self.commands.base_velocity.ranges.lin_vel_x = (-1.0, 1.0)

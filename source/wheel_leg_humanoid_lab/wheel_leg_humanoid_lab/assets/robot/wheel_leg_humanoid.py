@@ -49,12 +49,29 @@ AK70_10 = {
 # MAX_LINVEL = WHEEL_RADIUS * AK80_64["rated_speed"]
 # MAX_ANGVEL = MAX_LINVEL / L
 
+ARMATURE_5020 = 0.003609725
+ARMATURE_7520_14 = 0.010177520
+ARMATURE_7520_22 = 0.025101925
+ARMATURE_4010 = 0.00425
+
+NATURAL_FREQ = 10 * 2.0 * 3.1415926535  # 10Hz
+DAMPING_RATIO = 2.0
+
+STIFFNESS_5020 = ARMATURE_5020 * NATURAL_FREQ**2
+STIFFNESS_7520_14 = ARMATURE_7520_14 * NATURAL_FREQ**2
+STIFFNESS_7520_22 = ARMATURE_7520_22 * NATURAL_FREQ**2
+STIFFNESS_4010 = ARMATURE_4010 * NATURAL_FREQ**2
+
+DAMPING_5020 = 2.0 * DAMPING_RATIO * ARMATURE_5020 * NATURAL_FREQ
+DAMPING_7520_14 = 2.0 * DAMPING_RATIO * ARMATURE_7520_14 * NATURAL_FREQ
+DAMPING_7520_22 = 2.0 * DAMPING_RATIO * ARMATURE_7520_22 * NATURAL_FREQ
+DAMPING_4010 = 2.0 * DAMPING_RATIO * ARMATURE_4010 * NATURAL_FREQ
+
 # Robot Configurations
 WHEEL_LEG_HUMANOID_CFG = ArticulationCfg(
     spawn=sim_utils.UrdfFileCfg(
         fix_base=False,
-        merge_fixed_joints=True,
-        replace_cylinders_with_capsules=False,
+        replace_cylinders_with_capsules=True,
         asset_path=f"{ISAACLAB_ASSETS_DATA_DIR}/Robots/kimm/wheel_leg_humanoid_description/urdf/wheel_leg_humanoid.urdf",
         activate_contact_sensors=True,
         rigid_props=sim_utils.RigidBodyPropertiesCfg(
@@ -67,7 +84,7 @@ WHEEL_LEG_HUMANOID_CFG = ArticulationCfg(
             max_depenetration_velocity=1.0,
         ),
         articulation_props=sim_utils.ArticulationRootPropertiesCfg(
-            enabled_self_collisions=False, solver_position_iteration_count=4, solver_velocity_iteration_count=4
+            enabled_self_collisions=True, solver_position_iteration_count=8, solver_velocity_iteration_count=4
         ),
         joint_drive=sim_utils.UrdfConverterCfg.JointDriveCfg(
             gains=sim_utils.UrdfConverterCfg.JointDriveCfg.PDGainsCfg(stiffness=0, damping=0)
@@ -117,15 +134,14 @@ WHEEL_LEG_HUMANOID_CFG = ArticulationCfg(
             joint_names_expr=["waist"],
             effort_limit_sim=AK80_64["peak_torque"],
             velocity_limit_sim=AK80_64["rated_speed"],
-            friction=0.0,
             stiffness={
-                "waist": 200.0,
+                "waist": STIFFNESS_7520_14,
             },
             damping={
-                "waist": 5.0,
+                "waist": DAMPING_7520_14,
             },
             armature={
-                "waist": 0.01,
+                "waist": ARMATURE_7520_14,
             },
         ),
         "legs": ImplicitActuatorCfg(
@@ -133,42 +149,31 @@ WHEEL_LEG_HUMANOID_CFG = ArticulationCfg(
             effort_limit_sim=AK80_64["peak_torque"],
             velocity_limit_sim=AK80_64["rated_speed"],
             stiffness={
-                ".*_pelvis_1": 200.0,
-                ".*_pelvis_2": 150.0,
-                ".*_thigh": 200.0,
-                ".*_calf": 200.0,
+                ".*_pelvis_1": STIFFNESS_7520_14,
+                ".*_pelvis_2": STIFFNESS_7520_22,
+                ".*_thigh": STIFFNESS_7520_14,
+                ".*_calf": STIFFNESS_7520_22,
             },
             damping={
-                ".*_pelvis_1": 5.0,
-                ".*_pelvis_2": 5.0,
-                ".*_thigh": 5.0,
-                ".*_calf": 5.0,
+                ".*_pelvis_1": DAMPING_7520_14,
+                ".*_pelvis_2": DAMPING_7520_22,
+                ".*_thigh": DAMPING_7520_14,
+                ".*_calf": DAMPING_7520_22,
             },
             armature={
-                ".*_pelvis_1": 0.01,
-                ".*_pelvis_2": 0.01,
-                ".*_thigh": 0.01,
-                ".*_calf": 0.01,
+                ".*_pelvis_1": ARMATURE_7520_14,
+                ".*_pelvis_2": ARMATURE_7520_22,
+                ".*_thigh": ARMATURE_7520_14,
+                ".*_calf": ARMATURE_7520_22,
             },
-            friction=0.0,
         ),
         "feet": ImplicitActuatorCfg(
             joint_names_expr=[".*_ankle_1", ".*_ankle_2"],
             effort_limit_sim=AK70_10["peak_torque"],
             velocity_limit_sim=AK70_10["rated_speed"],
-            stiffness={
-                ".*_ankle_1": 20.0,
-                ".*_ankle_2": 20.0,
-            },
-            damping={
-                ".*_ankle_1": 2.0,
-                ".*_ankle_2": 2.0,
-            },
-            armature={
-                ".*_ankle_1": 0.01,
-                ".*_ankle_2": 0.01,
-            },
-            friction=0.0,
+            stiffness=2.0 * STIFFNESS_5020,
+            damping=2.0 * DAMPING_5020,
+            armature=2.0 * ARMATURE_5020,
         ),
         "wheel": ImplicitActuatorCfg(
             joint_names_expr=[".*_wheel"],
@@ -196,3 +201,16 @@ WHEEL_LEG_HUMANOID_CFG = ArticulationCfg(
         ),
     }
 )
+
+WALKING_MODE_ACTION_SCALE = {}
+for a in WHEEL_LEG_HUMANOID_CFG.actuators.values():
+    e = a.effort_limit_sim
+    s = a.stiffness
+    names = a.joint_names_expr
+    if not isinstance(e, dict):
+        e = {n: e for n in names}
+    if not isinstance(s, dict):
+        s = {n: s for n in names}
+    for n in names:
+        if n in e and n in s and s[n]:
+            WALKING_MODE_ACTION_SCALE[n] = 0.25 * e[n] / s[n]

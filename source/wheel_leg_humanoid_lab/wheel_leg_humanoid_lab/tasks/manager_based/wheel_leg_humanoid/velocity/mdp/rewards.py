@@ -96,7 +96,7 @@ def stand_still(
     """Penalize offsets from the default joint positions when the command is very small."""
     # Penalize motion when command is nearly zero.
     reward = mdp.joint_deviation_l1(env, asset_cfg)
-    reward *= torch.norm(env.command_manager.get_command(command_name)[:, :2], dim=1) < command_threshold
+    reward *= torch.norm(env.command_manager.get_command(command_name), dim=1) < command_threshold
     reward *= torch.clamp(-env.scene["robot"].data.projected_gravity_b[:, 2], 0, 0.7) / 0.7
     return reward
 
@@ -351,7 +351,7 @@ def feet_air_time(
     last_air_time = contact_sensor.data.last_air_time[:, sensor_cfg.body_ids]
     reward = torch.sum((last_air_time - threshold) * first_contact, dim=1)
     # no reward for zero command
-    reward *= torch.norm(env.command_manager.get_command(command_name)[:, :2], dim=1) > 0.1
+    reward *= torch.norm(env.command_manager.get_command(command_name), dim=1) > 0.1
     reward *= torch.clamp(-env.scene["robot"].data.projected_gravity_b[:, 2], 0, 0.7) / 0.7
     return reward
 
@@ -374,7 +374,7 @@ def feet_air_time_positive_biped(env, command_name: str, threshold: float, senso
     reward = torch.min(torch.where(single_stance.unsqueeze(-1), in_mode_time, 0.0), dim=1)[0]
     reward = torch.clamp(reward, max=threshold)
     # no reward for zero command
-    reward *= torch.norm(env.command_manager.get_command(command_name)[:, :2], dim=1) > 0.1
+    reward *= torch.norm(env.command_manager.get_command(command_name), dim=1) > 0.1
     reward *= torch.clamp(-env.scene["robot"].data.projected_gravity_b[:, 2], 0, 0.7) / 0.7
     return reward
 
@@ -678,53 +678,3 @@ def flat_orientation_l2(env: ManagerBasedRLEnv, asset_cfg: SceneEntityCfg = Scen
     reward = torch.sum(torch.square(asset.data.projected_gravity_b[:, :2]), dim=1)
     reward *= torch.clamp(-env.scene["robot"].data.projected_gravity_b[:, 2], 0, 0.7) / 0.7
     return reward
-
-
-def rolling_correlation(
-    env: ManagerBasedRLEnv,
-    std: float,
-    wheel_radius: float,
-    asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
-) -> torch.Tensor:
-    """Reward the correlation between forward velocity and wheel rotation, modulated by stability.
-
-    This function computes an exponential reward based on the squared error between the target
-    wheel angular velocity (inferred from linear velocity) and the actual wheel velocity.
-
-    Crucially, this reward is then multiplied by a stability factor based on the robot's
-    orientation relative to gravity. This ensures the agent is only rewarded for rolling
-    while maintaining an upright, stable posture.
-
-    Args:
-        env: The environment instance.
-        std: The standard deviation for the exponential kernel, controlling reward falloff.
-        wheel_radius: The radius of the wheels in meters.
-        asset_cfg: The configuration for the robot asset. Must specify wheel joint names.
-
-    Returns:
-        A tensor containing the stability-modulated rolling correlation reward.
-    """
-    # Get the robot asset from the scene.
-    asset: RigidObject = env.scene[asset_cfg.name]
-    # Get the robot's forward linear velocity in its base frame (x-axis).
-    forward_velocity = asset.data.root_lin_vel_b[:, 0]
-
-    # Find wheel joint IDs and compute the average angular velocity (with sign inverted).
-    wheel_joint_ids = asset.find_joints(asset_cfg.joint_names)[0]
-    avg_actual_wheel_velocity = -torch.mean(asset.data.joint_vel[:, wheel_joint_ids], dim=1)
-
-    # Calculate the target wheel angular velocity: w = v / r.
-    target_wheel_velocity = forward_velocity / wheel_radius
-
-    # Compute the squared error between target and actual wheel angular velocities.
-    rolling_error = torch.square(target_wheel_velocity - avg_actual_wheel_velocity)
-
-    # Compute the exponential reward based on the error.
-    reward = torch.exp(-rolling_error / (std**2))
-
-    # Calculate the stability factor: it approaches 1 when the robot is upright.
-    # The z-component of projected_gravity_b is close to -1 when upright, so we invert its sign.
-    stability_factor = torch.clamp(-asset.data.projected_gravity_b[:, 2], 0.0, 0.7) / 0.7
-
-    # Final reward = rolling reward * stability factor.
-    return reward * stability_factor

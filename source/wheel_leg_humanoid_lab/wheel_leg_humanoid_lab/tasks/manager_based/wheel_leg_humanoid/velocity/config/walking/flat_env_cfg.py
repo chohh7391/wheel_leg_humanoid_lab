@@ -29,8 +29,6 @@ class WheelLegHumanoidWalkingFlatEnvCfg(WheelLegHumanoidWalkingRoughEnvCfg):
         self.rewards.lin_vel_z_l2.weight = -0.2
         self.rewards.action_rate_l2.weight = -0.005
         self.rewards.joint_acc_l2.weight = -1.0e-7
-        self.rewards.feet_air_time.weight = 0.75
-        self.rewards.feet_air_time.params["threshold"] = 0.4
         self.rewards.joint_torques_l2.weight = -2.0e-6
         self.rewards.joint_torques_l2.params["asset_cfg"].joint_names = [".*_pelvis_.*", ".*_thigh", ".*_calf"]
 
