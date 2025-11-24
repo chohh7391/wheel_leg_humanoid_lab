@@ -27,7 +27,7 @@ class WheelLegHumanoidDrivingActionsCfg(ActionsCfg):
     )
 
     joint_vel = mdp.JointVelocityActionCfg(
-        asset_name="robot", joint_names=[""], scale=500.0, use_default_offset=True, clip=None, preserve_order=True
+        asset_name="robot", joint_names=[""], scale=5.0, use_default_offset=True, clip=None, preserve_order=True
     )
 
 
@@ -69,6 +69,7 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         "left_wheel"
     ]
     joint_names = waist_joint_names + leg_joint_names + wheel_joint_names
+    # fmt: on
 
     def __post_init__(self):
         # post init of parent
@@ -120,8 +121,8 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
                 "x": (-0.5, 0.5),
                 "y": (-0.5, 0.5),
                 "z": (0.0, 0.0),
-                "roll": (-0.2, 0.2),
-                "pitch": (-0.2, 0.2),
+                "roll": (-0.0, 0.0),
+                "pitch": (-0.0, 0.0),
                 "yaw": (-3.14, 3.14),
             },
             "velocity_range": {
@@ -160,22 +161,22 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         self.rewards.joint_torques_wheel_l2.weight = 0
         self.rewards.joint_torques_wheel_l2.params["asset_cfg"].joint_names = self.wheel_joint_names
         self.rewards.joint_vel_l2.weight = 0
-        self.rewards.joint_vel_l2.params["asset_cfg"].joint_names = self.waist_joint_names +  self.leg_joint_names
+        self.rewards.joint_vel_l2.params["asset_cfg"].joint_names = self.waist_joint_names + self.leg_joint_names
         self.rewards.joint_vel_wheel_l2.weight = 0
         self.rewards.joint_vel_wheel_l2.params["asset_cfg"].joint_names = self.wheel_joint_names
         self.rewards.joint_acc_l2.weight = -2.5e-7
-        self.rewards.joint_acc_l2.params["asset_cfg"].joint_names = self.waist_joint_names +  self.leg_joint_names
+        self.rewards.joint_acc_l2.params["asset_cfg"].joint_names = self.waist_joint_names + self.leg_joint_names
         self.rewards.joint_acc_wheel_l2.weight = -2.5e-9
         self.rewards.joint_acc_wheel_l2.params["asset_cfg"].joint_names = self.wheel_joint_names
         # self.rewards.create_joint_deviation_l1_rewterm("joint_deviation_pelvis_2_l1", -0.2, [".*pelvis_2"])
         self.rewards.joint_pos_limits.weight = -5.0
-        self.rewards.joint_pos_limits.params["asset_cfg"].joint_names = self.waist_joint_names +  self.leg_joint_names
+        self.rewards.joint_pos_limits.params["asset_cfg"].joint_names = self.waist_joint_names + self.leg_joint_names
         self.rewards.joint_vel_limits.weight = 0
         self.rewards.joint_vel_limits.params["asset_cfg"].joint_names = self.wheel_joint_names
         self.rewards.joint_power.weight = -2e-5
-        self.rewards.joint_power.params["asset_cfg"].joint_names = self.waist_joint_names +  self.leg_joint_names
+        self.rewards.joint_power.params["asset_cfg"].joint_names = self.waist_joint_names + self.leg_joint_names
         self.rewards.stand_still.weight = -2.0
-        self.rewards.stand_still.params["asset_cfg"].joint_names = self.waist_joint_names +  self.leg_joint_names
+        self.rewards.stand_still.params["asset_cfg"].joint_names = self.waist_joint_names + self.leg_joint_names
         self.rewards.joint_pos_penalty.weight = -1.0
         self.rewards.joint_pos_penalty.params["asset_cfg"].joint_names = self.waist_joint_names + self.leg_joint_names
         self.rewards.wheel_vel_penalty.weight = 0
@@ -231,8 +232,10 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         self.terminations.illegal_contact.params["sensor_cfg"].body_names = [self.base_link_name]
 
         # ------------------------------Curriculums------------------------------
-        # self.curriculum.command_levels.params["range_multiplier"] = (0.2, 1.0)
-        self.curriculum.command_levels = None
+        # self.curriculum.command_levels_lin_vel.params["range_multiplier"] = (0.2, 1.0)
+        # self.curriculum.command_levels_ang_vel.params["range_multiplier"] = (0.2, 1.0)
+        self.curriculum.command_levels_lin_vel = None
+        self.curriculum.command_levels_ang_vel = None
 
         # ------------------------------Commands------------------------------
         self.commands.base_velocity.ranges.lin_vel_x = (-0.55, 0.55)

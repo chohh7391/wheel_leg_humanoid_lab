@@ -2,19 +2,18 @@
 # SPDX-License-Identifier: Apache-2.0
 
 from isaaclab.utils import configclass
-
 import wheel_leg_humanoid_lab.tasks.manager_based.wheel_leg_humanoid.velocity.mdp as mdp
-
 from wheel_leg_humanoid_lab.tasks.manager_based.wheel_leg_humanoid.velocity.velocity_env_cfg import (
     ActionsCfg,
     LocomotionVelocityRoughEnvCfg,
     RewardsCfg,
 )
 
-from wheel_leg_humanoid_lab.assets.robot.wheel_leg_humanoid import WHEEL_LEG_HUMANOID_CFG, WALKING_MODE_ACTION_SCALE
 ##
 # Pre-defined configs
 ##
+from wheel_leg_humanoid_lab.assets.robot.wheel_leg_humanoid import WHEEL_LEG_HUMANOID_CFG, WALKING_MODE_ACTION_SCALE
+
 
 @configclass
 class WheelLegHumanoidWalkingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):

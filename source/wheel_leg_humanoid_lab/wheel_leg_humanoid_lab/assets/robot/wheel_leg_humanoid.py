@@ -51,7 +51,7 @@ AK80_64 = {
     "reduction": 64,  # 64:1
 }
 
-NATURAL_FREQ = 10 * 2.0 * 3.1415926535  # 10Hz
+NATURAL_FREQ = 10 * 2.0 * np.pi  # 10Hz
 DAMPING_RATIO = 2.0
 
 ARMATURE_AK80_64 = cal_motor_armature(AK80_64["inertia"], AK80_64["reduction"])
