@@ -54,7 +54,7 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
     rewards: WheelLegHumanoidDrivingRewardsCfg = WheelLegHumanoidDrivingRewardsCfg()
 
     base_link_name = "torso_link"
-    foot_link_name = ".*_wheel_link_.*"
+    foot_link_name = ".*_wheel_link_.*|.*_ankle_roll_link"
 
     # fmt: off
     waist_joint_names = [
@@ -233,4 +233,4 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         # ------------------------------Commands------------------------------
         self.commands.base_velocity.ranges.lin_vel_x = (-0.55, 0.55)
         self.commands.base_velocity.ranges.lin_vel_y = (0.0, 0.0)
-        self.commands.base_velocity.ranges.ang_vel_z = (-0.2, 0.2)
+        self.commands.base_velocity.ranges.ang_vel_z = (-1.0, 1.0)
