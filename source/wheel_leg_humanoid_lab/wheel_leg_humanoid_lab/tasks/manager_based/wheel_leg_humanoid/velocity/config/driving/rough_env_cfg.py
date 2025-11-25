@@ -106,7 +106,7 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
 
         # ------------------------------Actions------------------------------
         # reduce action scale
-        self.actions.joint_pos.scale = {".*_hip_roll_joint": 0.125, "^(?!.*_hip_roll_joint).*": 0.25}
+        self.actions.joint_pos.scale = {".*_hip_roll_joint": 0.05, "^(?!.*_hip_roll_joint).*": 0.10}
         self.actions.joint_vel.scale = 5.0
         self.actions.joint_pos.clip = {".*": (-100.0, 100.0)}
         self.actions.joint_vel.clip = {".*": (-100.0, 100.0)}
