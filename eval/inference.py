@@ -26,7 +26,7 @@ from isaaclab.utils.assets import ISAAC_NUCLEUS_DIR
 from wheel_leg_humanoid_lab.tasks.manager_based.wheel_leg_humanoid.velocity.config.walking.rough_env_cfg import WheelLegHumanoidWalkingRoughEnvCfg
 from wheel_leg_humanoid_lab.tasks.manager_based.wheel_leg_humanoid.velocity.config.walking.flat_env_cfg import WheelLegHumanoidWalkingFlatEnvCfg
 from wheel_leg_humanoid_lab.tasks.manager_based.wheel_leg_humanoid.velocity.config.driving.rough_env_cfg import WheelLegHumanoidDrivingRoughEnvCfg
-from wheel_leg_humanoid_lab.tasks.manager_based.wheel_leg_humanoid.velocity.config.walking.flat_env_cfg import WheelLegHumanoidDrivingFlatEnvCfg
+from wheel_leg_humanoid_lab.tasks.manager_based.wheel_leg_humanoid.velocity.config.driving.flat_env_cfg import WheelLegHumanoidDrivingFlatEnvCfg
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -116,8 +116,8 @@ def main():
         
         # 2. 모터 스펙 기준선 그리기 (Rated & Peak)
         # Rated Torque (±48) - 주황색 점선
-        ax[i].axhline(y=RATED_TORQUE, color='orange', linestyle='--', linewidth=1.0, alpha=0.7, label='Rated (48)')
-        ax[i].axhline(y=-RATED_TORQUE, color='orange', linestyle='--', linewidth=1.0, alpha=0.7)
+        ax[i].axhline(y=RATED_TORQUE, color='red', linestyle='--', linewidth=1.0, alpha=0.7, label='Rated (48)')
+        ax[i].axhline(y=-RATED_TORQUE, color='red', linestyle='--', linewidth=1.0, alpha=0.7)
         
         # Peak Torque (±120) - 빨간색 실선
         ax[i].axhline(y=PEAK_TORQUE, color='red', linestyle='-', linewidth=1.2, alpha=0.6, label='Peak (120)')
