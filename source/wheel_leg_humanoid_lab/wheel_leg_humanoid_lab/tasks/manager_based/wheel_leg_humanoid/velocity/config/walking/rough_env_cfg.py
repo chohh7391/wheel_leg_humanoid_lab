@@ -18,7 +18,7 @@ from wheel_leg_humanoid_lab.assets.robot.wheel_leg_humanoid import WHEEL_LEG_HUM
 @configclass
 class WheelLegHumanoidWalkingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
     base_link_name = "torso_link"
-    foot_link_name = ".*_ankle_roll_link"
+    foot_link_name = ".*_ankle_roll_link|.*_foot_wheel_link_.*"
     # fmt: off
     joint_names = [
         "left_hip_pitch_joint",          # 0  L_LEG_HIP_PITCH

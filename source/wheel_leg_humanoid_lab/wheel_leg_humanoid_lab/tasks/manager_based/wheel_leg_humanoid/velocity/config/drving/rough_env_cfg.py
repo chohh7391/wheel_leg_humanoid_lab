@@ -78,10 +78,11 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
         # ------------------------------Sence------------------------------
         self.scene.terrain.terrain_generator = DRIVABLE_TERRAINS_CFG
         self.scene.robot = WHEEL_LEG_HUMANOID_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
-        self.scene.robot.init_state.pos = (0.0, 0.0, 0.44)
+        self.scene.robot.init_state.pos = (0.0, 0.0, 0.45)
         self.scene.robot.init_state.joint_pos.update({
-            ".*_hip_pitch_joint": float(np.deg2rad(-20.0)),
-            ".*_knee_joint": float(np.deg2rad(119.99)),
+            ".*_hip_pitch_joint": -0.35,
+            ".*_knee_joint": 2.09,
+            ".*_ankle_pitch_joint": 0.0,
         })
         self.scene.height_scanner.prim_path = "{ENV_REGEX_NS}/Robot/" + self.base_link_name
         self.scene.height_scanner_base.prim_path = "{ENV_REGEX_NS}/Robot/" + self.base_link_name
@@ -106,6 +107,7 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
 
         # ------------------------------Actions------------------------------
         # reduce action scale
+        # self.actions.joint_pos.scale = {".*_hip_roll_joint": 0.125, "^(?!.*_hip_roll_joint).*": 0.25}
         self.actions.joint_pos.scale = {".*_hip_roll_joint": 0.125, "^(?!.*_hip_roll_joint).*": 0.25}
         self.actions.joint_vel.scale = 5.0
         self.actions.joint_pos.clip = {".*": (-100.0, 100.0)}
@@ -141,7 +143,7 @@ class WheelLegHumanoidDrivingRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
 
         # ------------------------------Rewards------------------------------
         # General
-        self.rewards.is_terminated.weight = -200.0
+        self.rewards.is_terminated.weight = 0.0
 
         # Root penalties
         self.rewards.lin_vel_z_l2.weight = -2.0
