@@ -130,7 +130,7 @@ WHEEL_LEG_HUMANOID_CFG = ArticulationCfg(
             damping=DAMPING_AK80_64,
             armature=ARMATURE_AK80_64,
         ),
-        "wheel": ImplicitActuatorCfg(
+        "wheels": ImplicitActuatorCfg(
             joint_names_expr=[".*_wheel_joint"],
             effort_limit_sim=AK80_64["peak_torque"],
             velocity_limit_sim=AK80_64["rated_speed"],
@@ -138,7 +138,7 @@ WHEEL_LEG_HUMANOID_CFG = ArticulationCfg(
             damping=0.5,
             armature=ARMATURE_AK80_64,
         ),
-        "foot_wheel": ImplicitActuatorCfg(
+        "foot_wheels": ImplicitActuatorCfg(
             joint_names_expr=[".*_foot_wheel_joint_.*"],
             effort_limit_sim=0.0,  # no actuation
             velocity_limit_sim=1000.0,  # no limit
