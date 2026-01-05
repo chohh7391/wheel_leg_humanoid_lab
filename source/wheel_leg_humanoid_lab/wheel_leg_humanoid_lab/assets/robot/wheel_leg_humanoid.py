@@ -1,5 +1,5 @@
 import isaaclab.sim as sim_utils
-from isaaclab.actuators import ImplicitActuatorCfg
+from isaaclab.actuators import DCMotorCfg
 from isaaclab.assets.articulation import ArticulationCfg
 
 from wheel_leg_humanoid_lab.assets import ISAACLAB_ASSETS_DATA_DIR
@@ -46,6 +46,7 @@ def cal_motor_armature(inertia, reduction):
 AK80_64 = {
     "peak_torque": 120,
     "rated_torque": 48,
+    "peak_speed": rpm2rad_per_s(54),
     "rated_speed": rpm2rad_per_s(48),
     "inertia": 564.5,  # g cm^2
     "reduction": 64,  # 64:1
@@ -101,57 +102,54 @@ WHEEL_LEG_HUMANOID_CFG = ArticulationCfg(
     ),
     soft_joint_pos_limit_factor=0.9,
     actuators={
-        "legs": ImplicitActuatorCfg(
+        "legs": DCMotorCfg(
             joint_names_expr=[
                 ".*_hip_yaw_joint",
                 ".*_hip_roll_joint",
                 ".*_hip_pitch_joint",
                 ".*_knee_joint",
             ],
-            effort_limit_sim=AK80_64["peak_torque"],
-            velocity_limit_sim=AK80_64["rated_speed"],
+            saturation_effort=AK80_64["peak_torque"],
+            effort_limit=AK80_64["rated_torque"],
+            velocity_limit=AK80_64["peak_speed"],
             stiffness=STIFFNESS_AK80_64,
             damping=DAMPING_AK80_64,
             armature=ARMATURE_AK80_64,
         ),
-        "feet": ImplicitActuatorCfg(
+        "feet": DCMotorCfg(
             joint_names_expr=[".*_ankle_pitch_joint", ".*_ankle_roll_joint"],
-            effort_limit_sim=AK80_64["peak_torque"],
-            velocity_limit_sim=AK80_64["rated_speed"],
+            saturation_effort=2.0 * AK80_64["peak_torque"],
+            effort_limit=2.0 * AK80_64["rated_torque"],
+            velocity_limit=AK80_64["peak_speed"],
             stiffness=2.0 * STIFFNESS_AK80_64,
             damping=2.0 * DAMPING_AK80_64,
             armature=2.0 * ARMATURE_AK80_64,
         ),
-        "waist_yaw": ImplicitActuatorCfg(
+        "waist_yaw": DCMotorCfg(
             joint_names_expr=["waist_yaw_joint"],
-            effort_limit_sim=AK80_64["peak_torque"],
-            velocity_limit_sim=AK80_64["rated_speed"],
+            saturation_effort=AK80_64["peak_torque"],
+            effort_limit=AK80_64["rated_torque"],
+            velocity_limit=AK80_64["peak_speed"],
             stiffness=STIFFNESS_AK80_64,
             damping=DAMPING_AK80_64,
             armature=ARMATURE_AK80_64,
         ),
-        "wheels": ImplicitActuatorCfg(
+        "wheels": DCMotorCfg(
             joint_names_expr=[".*_wheel_joint"],
-            effort_limit_sim=AK80_64["peak_torque"],
-            velocity_limit_sim=AK80_64["rated_speed"],
+            saturation_effort=AK80_64["peak_torque"],
+            effort_limit=AK80_64["rated_torque"],
+            velocity_limit=AK80_64["peak_speed"],
             stiffness=0.0,
             damping=0.5,
             armature=ARMATURE_AK80_64,
-        ),
-        "foot_wheels": ImplicitActuatorCfg(
-            joint_names_expr=[".*_foot_wheel_joint_.*"],
-            effort_limit_sim=0.0,  # no actuation
-            velocity_limit_sim=1000.0,  # no limit
-            stiffness=0.0,
-            damping=0.5,
-            armature=0.0,
+            friction=0.0,
         ),
     }
 )
 
 WALKING_MODE_ACTION_SCALE = {}
 for a in WHEEL_LEG_HUMANOID_CFG.actuators.values():
-    e = a.effort_limit_sim
+    e = a.effort_limit
     s = a.stiffness
     names = a.joint_names_expr
     if not isinstance(e, dict):
